@@ -1,0 +1,1767 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030a14">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="مصلحة الري">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<title>منصة مصلحة الري الرقمية — مركز القيادة v2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#030a14;--panel:#081326;--panel2:#0b1a30;--panel3:#0e2140;--line:#153252;--line2:#1d4066;
+ --aqua:#00d4ff;--aqua2:#0891b2;--gold:#c9a84c;--gold2:#e8c66a;
+ --ok:#2dd48b;--warn:#ffb454;--bad:#ff5470;
+ --tx:#e9f2fa;--mut:#7e97b3;--mut2:#54708f;
+ --sh:0 14px 40px #00000066;--r:14px;
+ --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+ --face:'Cairo',Tahoma,Arial,sans-serif;
+}
+[data-theme="light"]{
+ --bg:#eef4f2;--panel:#ffffff;--panel2:#f4f9f7;--panel3:#e9f2ef;--line:#d5e4df;--line2:#bcd3cc;
+ --aqua:#0a7f9e;--aqua2:#0a6e8a;--gold:#8a6c22;--gold2:#6e551a;
+ --ok:#0f8f5f;--warn:#a86a00;--bad:#c22b47;
+ --tx:#12312c;--mut:#5a746f;--mut2:#7d938f;
+ --sh:0 10px 30px #0a4a4014;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--face);font-size:13px;line-height:1.75;
+ background-image:radial-gradient(1100px 500px at 88% -8%,#0a355522,transparent),radial-gradient(900px 460px at 0% 108%,#c9a84c0d,transparent)}
+[data-theme="light"] body,body[data-theme="light"]{background-image:none}
+::selection{background:#00d4ff33}
+.num,input[type=number],td.n,.mono{font-family:var(--mono);direction:ltr;unicode-bidi:embed;letter-spacing:.2px}
+a{color:var(--aqua)}
+h1,h2,h3{font-weight:900;letter-spacing:-.2px}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--line2);border-radius:9px}::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- الهيكل ---------- */
+.shell{display:grid;grid-template-columns:272px 1fr;min-height:100vh}
+.side{background:linear-gradient(180deg,var(--panel),var(--panel) 70%,#081326e0);border-left:1px solid var(--line);padding:16px 14px 12px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:16}
+[data-theme="light"] .side{background:var(--panel)}
+.logo{display:flex;align-items:center;gap:11px;padding:4px 6px 15px;border-bottom:1px solid var(--line)}
+.mark{width:46px;height:46px;border-radius:13px;background:linear-gradient(140deg,var(--aqua2),#064d63);color:#fff;display:grid;place-items:center;font-size:27px;font-weight:900;box-shadow:inset 0 0 0 1px #ffffff22,0 6px 18px #00d4ff22;flex:none}
+[data-theme="light"] .mark{background:linear-gradient(140deg,#0a6e63,#064d47)}
+.logo b{display:block;font-size:14.5px}
+.logo small{display:block;font-size:9.5px;color:var(--mut);margin-top:2px;letter-spacing:.4px}
+.nav{overflow:auto;flex:1;margin-top:6px;padding-bottom:8px}
+.navtitle{font-size:9px;color:var(--mut2);margin:16px 9px 6px;letter-spacing:2.5px;font-weight:700}
+.nav button{width:100%;display:flex;align-items:center;gap:9px;border:1px solid transparent;background:transparent;border-radius:10px;padding:9px 11px;text-align:right;font-weight:700;font-size:12.5px;color:var(--mut);cursor:pointer;margin:2px 0;font-family:var(--face);transition:.15s}
+.nav button i{font-style:normal;width:20px;text-align:center;font-size:15px;opacity:.9}
+.nav button:hover{background:var(--panel2);color:var(--tx)}
+.nav button.on{background:linear-gradient(90deg,#00d4ff14,transparent);border-color:var(--line2);color:var(--gold2)}
+[data-theme="light"] .nav button.on{background:#0a7f9e12;color:#0a6e63}
+.nav button.on i{color:var(--aqua)}
+.sfoot{border-top:1px solid var(--line);padding-top:10px;font-size:9.5px;color:var(--mut);line-height:1.9}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line2);border-radius:99px;padding:2px 9px;font-size:9px;color:var(--mut);background:var(--panel2)}
+.chip i{width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block}
+.chip.off i{background:var(--warn)}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.top{height:60px;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 20px;position:sticky;top:0;z-index:12}
+.men{display:none;border:1px solid var(--line2);background:var(--panel2);color:var(--tx);border-radius:9px;padding:7px 11px;font-size:15px;cursor:pointer}
+.crumb{font-size:11px;color:var(--mut);display:flex;align-items:center;gap:7px;min-width:0}
+.crumb b{color:var(--tx);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb .sep{color:var(--mut2)}
+.tsp{flex:1}
+.tbtn{border:1px solid var(--line2);background:var(--panel2);color:var(--mut);border-radius:10px;padding:7.5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:var(--face);display:inline-flex;align-items:center;gap:7px;transition:.15s;white-space:nowrap}
+.tbtn:hover{color:var(--tx);border-color:var(--aqua2)}
+.tbtn kbd{font-family:var(--mono);font-size:9px;border:1px solid var(--line2);border-radius:5px;padding:1px 5px;color:var(--mut2)}
+.clock{font-family:var(--mono);font-size:11px;color:var(--aqua);border:1px solid var(--line2);background:var(--panel2);border-radius:10px;padding:7px 12px;direction:ltr;white-space:nowrap}
+.livedot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;margin-left:6px;animation:pl 2s infinite}
+@keyframes pl{0%,100%{box-shadow:0 0 0 0 #2dd48b55}50%{box-shadow:0 0 0 6px transparent}}
+
+.wrap{padding:24px;max-width:1480px;margin:0 auto;width:100%}
+
+/* ---------- البطولة والمؤشرات ---------- */
+.hero{background:linear-gradient(125deg,#052b46,#083a55 55%,#0a4a63);border:1px solid var(--line2);border-radius:20px;color:#eaf6ff;padding:30px 32px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+[data-theme="light"] .hero{background:linear-gradient(125deg,#0a5a50,#0c7466);border-color:#0a5a50;color:#f2fbf9}
+.hero:after{content:"≈";position:absolute;left:30px;top:-70px;font-size:300px;color:#ffffff0a;transform:rotate(-16deg);pointer-events:none}
+.eyebrow{font-size:9.5px;color:var(--gold2);font-weight:700;letter-spacing:2.5px}
+[data-theme="light"] .eyebrow{color:#ffe9ad}
+.hero h1{font-size:27px;margin:10px 0 8px;line-height:1.35}
+.hero p{font-size:12px;line-height:2.1;color:#bcd9ea;max-width:680px;margin:0}
+[data-theme="light"] .hero p{color:#d8efe9}
+.hero .acts{margin-top:16px;display:flex;gap:9px;flex-wrap:wrap}
+.hbtn{border:0;border-radius:10px;background:#fff;color:#08405c;padding:10.5px 17px;font-weight:900;font-size:12px;cursor:pointer;font-family:var(--face)}
+.hbtn.g{background:transparent;border:1px solid #ffffff55;color:#fff}
+.ticker{margin-top:16px;border-top:1px dashed #ffffff2e;padding-top:11px;font-size:10.5px;color:#ffdf9e;display:flex;gap:22px;overflow:hidden;white-space:nowrap}
+.ticker span{display:inline-flex;gap:6px;align-items:center}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:15px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;position:relative;overflow:hidden;transition:.15s}
+.kpi:hover{border-color:var(--line2)}
+.kpi>span{display:block;color:var(--mut);font-size:10px;font-weight:700}
+.kpi b{display:flex;align-items:baseline;gap:6px;font-size:24px;margin:7px 0 2px;font-family:var(--mono);direction:ltr;justify-content:flex-end}
+.kpi b u{text-decoration:none;font-size:10px;color:var(--mut);font-family:var(--face)}
+.kpi small{color:var(--ok);font-size:9.5px;font-weight:700}
+.kpi small.w{color:var(--warn)}.kpi small.b{color:var(--bad)}
+.kpi svg{position:absolute;left:10px;bottom:8px;opacity:.85}
+.kpi.alert b{color:var(--bad)}
+
+/* ---------- الرؤوس والبطاقات ---------- */
+.head{display:flex;align-items:end;justify-content:space-between;margin:26px 0 12px;gap:10px;flex-wrap:wrap}
+.head h2{font-size:17.5px;margin:3px 0}
+.head span{font-size:9px;color:var(--gold);font-weight:700;letter-spacing:2px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:15px;padding:16px;text-align:right;cursor:pointer;min-height:148px;transition:.18s;font-family:var(--face);color:var(--tx);position:relative;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-2px);border-color:var(--aqua2);box-shadow:0 14px 38px #00121f66}
+[data-theme="light"] .card:hover{box-shadow:0 14px 34px #0a4a4018}
+.ico{width:38px;height:38px;border-radius:10px;background:linear-gradient(140deg,#0a3550,#0b2740);border:1px solid var(--line2);color:var(--aqua);display:grid;place-items:center;font-size:18px;font-weight:900;flex:none}
+[data-theme="light"] .ico{background:#e6f3f0;border-color:#cfe4de;color:#0a6e63}
+.card h3{font-size:13px;margin:12px 0 6px}
+.card p{font-size:10.5px;color:var(--mut);line-height:1.85;margin:0;flex:1}
+.card em{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:12px;padding-top:9px;color:var(--aqua);font-size:9.5px;font-style:normal;font-weight:700}
+.badge{font-size:8.5px;font-weight:900;border-radius:99px;padding:2.5px 9px;letter-spacing:.5px}
+.badge.tool{background:#00d4ff1a;color:var(--aqua);border:1px solid #00d4ff40}
+.badge.scope{background:#c9a84c1a;color:var(--gold2);border:1px solid #c9a84c40}
+.badge.demo{background:#ffb4541c;color:var(--warn);border:1px solid #ffb45445}
+[data-theme="light"] .badge.tool{background:#0a7f9e14}
+[data-theme="light"] .badge.scope{background:#8a6c2214}
+
+.sectorhero{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 24px}
+.sectorhero h1{font-size:22px;margin:7px 0 5px}
+.sectorhero p{font-size:11.5px;color:var(--mut);margin:0;max-width:760px}
+.org{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.org div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:11.5px;font-weight:700}
+.org small{display:block;color:var(--mut);margin-top:4px;font-weight:400;font-family:var(--mono);direction:ltr;text-align:right}
+
+/* ---------- لوحات الأدوات ---------- */
+.tgrid{display:grid;grid-template-columns:390px 1fr;gap:14px;align-items:start;margin-top:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:17px}
+.panel h3{margin:0 0 11px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.panel h3:before{content:"";width:3.5px;height:15px;border-radius:3px;background:var(--gold);display:inline-block}
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:9px 10px}
+.frm .full{grid-column:1/-1}
+label{display:block}
+label span{display:block;font-size:9.5px;color:var(--mut);font-weight:700;margin-bottom:4px}
+label span em{font-style:normal;color:var(--mut2);font-family:var(--mono);font-size:8.5px}
+input,select,textarea{width:100%;border:1px solid var(--line2);background:var(--panel2);color:var(--tx);border-radius:9px;padding:8.5px 11px;font-size:12px;font-family:var(--face);outline:0;transition:.15s}
+input[type=number]{font-family:var(--mono);direction:ltr;text-align:left}
+input:focus,select:focus,textarea:focus{border-color:var(--aqua2);box-shadow:0 0 0 3px #00d4ff1a}
+select{cursor:pointer}
+textarea{min-height:64px;resize:vertical}
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:900;font-size:12px;cursor:pointer;font-family:var(--face);display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.btn.p{background:linear-gradient(140deg,var(--aqua2),#065a76);color:#fff;box-shadow:0 6px 16px #00d4ff22}
+[data-theme="light"] .btn.p{background:linear-gradient(140deg,#0a7f6f,#0a6e63)}
+.btn.p:hover{filter:brightness(1.12)}
+.btn.g{background:var(--panel2);border:1px solid var(--line2);color:var(--mut)}
+.btn.g:hover{color:var(--tx)}
+.btn.gold{background:#c9a84c22;border:1px solid #c9a84c55;color:var(--gold2)}
+.btn.d{background:#ff547018;border:1px solid #ff547045;color:var(--bad)}
+.btn.sm{padding:6px 11px;font-size:10.5px;border-radius:8px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.rbox{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 13px}
+.rbox span{display:block;font-size:9px;color:var(--mut);font-weight:700}
+.rbox b{display:block;font-family:var(--mono);direction:ltr;text-align:right;font-size:16.5px;margin-top:4px;color:var(--aqua)}
+.rbox b u{text-decoration:none;font-size:9px;color:var(--mut);font-family:var(--face)}
+.rbox.gold b{color:var(--gold2)}
+.rbox.ok b{color:var(--ok)}.rbox.warn b{color:var(--warn)}.rbox.bad b{color:var(--bad)}
+.verdict{border-radius:11px;padding:11px 14px;font-size:11.5px;font-weight:700;margin-top:10px;border:1px solid}
+.verdict.ok{background:#2dd48b12;border-color:#2dd48b40;color:var(--ok)}
+.verdict.warn{background:#ffb45412;border-color:#ffb45440;color:var(--warn)}
+.verdict.bad{background:#ff547012;border-color:#ff547040;color:var(--bad)}
+.verdict.info{background:#00d4ff10;border-color:#00d4ff35;color:var(--aqua)}
+
+details.trace{margin-top:12px;border:1px dashed var(--line2);border-radius:11px;background:var(--panel2)}
+details.trace summary{cursor:pointer;padding:10px 14px;font-size:11px;font-weight:900;color:var(--gold2);list-style:none;display:flex;align-items:center;gap:8px}
+details.trace summary:after{content:"▾";margin-right:auto;color:var(--mut2);transition:.2s}
+details.trace[open] summary:after{transform:rotate(180deg)}
+.tr-steps{padding:2px 14px 13px;display:grid;gap:7px}
+.tr-s{border-right:2px solid var(--line2);padding-right:11px}
+.tr-s .k{font-size:10px;color:var(--mut);font-weight:700}
+.tr-s .f{font-family:var(--mono);direction:ltr;text-align:right;font-size:11px;color:var(--tx);margin:2px 0}
+.tr-s .s{font-family:var(--mono);direction:ltr;text-align:right;font-size:10.5px;color:var(--mut)}
+.tr-s .r{font-family:var(--mono);direction:ltr;text-align:right;font-size:11.5px;color:var(--aqua);font-weight:700}
+
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:14px;flex-wrap:wrap}
+.tabs button{border:0;background:transparent;color:var(--mut);font-family:var(--face);font-weight:700;font-size:11.5px;padding:9px 13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--aqua);border-color:var(--aqua)}
+.tabc{display:none}.tabc.on{display:block}
+
+table.dt{width:100%;border-collapse:collapse;font-size:11px}
+table.dt th{background:var(--panel3);color:var(--mut);font-size:9.5px;letter-spacing:.4px;padding:8px 10px;text-align:right;border-bottom:1px solid var(--line2);position:sticky;top:0}
+table.dt td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.dt td.n{text-align:left;color:var(--aqua)}
+table.dt tr:hover td{background:#00d4ff06}
+.tblwrap{overflow:auto;max-height:430px;border:1px solid var(--line);border-radius:11px}
+.pill{font-size:9px;font-weight:900;border-radius:99px;padding:2px 9px;display:inline-block}
+.pill.ok{background:#2dd48b1c;color:var(--ok)}.pill.warn{background:#ffb4541c;color:var(--warn)}.pill.bad{background:#ff54701c;color:var(--bad)}.pill.info{background:#00d4ff18;color:var(--aqua)}.pill.mut{background:var(--panel3);color:var(--mut)}
+.xdel{border:0;background:transparent;color:var(--mut2);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:6px}
+.xdel:hover{color:var(--bad);background:#ff547015}
+
+.scope{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.scope .panel ul{margin:6px 0 0;padding:0 18px 0 0;font-size:11.5px;color:var(--mut);line-height:2.1}
+.scope .panel ul li::marker{color:var(--gold)}
+.progress{height:7px;border-radius:99px;background:var(--panel3);overflow:hidden;margin-top:8px}
+.progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--aqua2),var(--aqua))}
+
+svg text{font-family:var(--mono)}
+svg .artx{font-family:var(--face)}
+.flow{stroke-dasharray:7 6;animation:fl 1.1s linear infinite}
+@keyframes fl{to{stroke-dashoffset:-13}}
+@media (prefers-reduced-motion:reduce){.flow{animation:none}.livedot{animation:none}*{transition:none!important}}
+
+/* ---------- المودال واللوحة والتنبيهات ---------- */
+.modalbg{display:none;position:fixed;inset:0;background:#010810cc;z-index:30;padding:20px;place-items:center;backdrop-filter:blur(4px)}
+.modalbg.show{display:grid}
+.modal{background:var(--panel);border:1px solid var(--line2);border-radius:18px;padding:24px;width:min(520px,100%);position:relative;box-shadow:var(--sh);max-height:88vh;overflow:auto}
+.modal .x{position:absolute;left:14px;top:12px;border:1px solid var(--line2);background:var(--panel2);color:var(--mut);border-radius:9px;width:31px;height:31px;font-size:17px;cursor:pointer}
+.pal{display:none;position:fixed;inset:0;background:#010810d0;z-index:35;padding:12vh 18px 18px;justify-content:center;backdrop-filter:blur(5px)}
+.pal.show{display:flex}
+.palbox{width:min(620px,100%);height:fit-content;background:var(--panel);border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:var(--sh)}
+.palbox input{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:15px 17px;font-size:14px;background:transparent}
+.palbox input:focus{box-shadow:none}
+.plist{max-height:52vh;overflow:auto;padding:7px}
+.pitem{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:12px}
+.pitem:hover,.pitem.sel{background:var(--panel2)}
+.pitem .ico{width:30px;height:30px;font-size:14px;border-radius:8px}
+.pitem small{display:block;color:var(--mut);font-size:9.5px}
+.pitem .tag{margin-right:auto;font-size:8.5px;color:var(--mut2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;white-space:nowrap}
+.phint{padding:9px 15px;font-size:9.5px;color:var(--mut2);border-top:1px solid var(--line);display:flex;gap:14px}
+#toasts{position:fixed;bottom:18px;left:18px;z-index:60;display:flex;flex-direction:column;gap:8px}
+.toast{background:var(--panel);border:1px solid var(--line2);border-right:3px solid var(--aqua);border-radius:11px;padding:11px 15px;font-size:11.5px;font-weight:700;box-shadow:var(--sh);animation:tin .25s ease;max-width:320px}
+.toast.ok{border-right-color:var(--ok)}.toast.bad{border-right-color:var(--bad)}.toast.warn{border-right-color:var(--warn)}
+@keyframes tin{from{transform:translateY(12px);opacity:0}}
+.alertrow{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;background:var(--panel)}
+.alertrow .sv{flex:none;width:9px;height:9px;border-radius:50%;margin-top:6px}
+.alertrow.bad .sv{background:var(--bad);box-shadow:0 0 0 4px #ff547022}
+.alertrow.warn .sv{background:var(--warn);box-shadow:0 0 0 4px #ffb45422}
+.alertrow b{display:block;font-size:12px}
+.alertrow small{color:var(--mut);font-size:10px}
+.empty{border:1px dashed var(--line2);border-radius:13px;padding:26px;text-align:center;color:var(--mut);font-size:11.5px}
+.empty b{display:block;font-size:13px;color:var(--tx);margin-bottom:5px}
+
+/* ---------- تقرير الطباعة ---------- */
+#rpt{display:none}
+@media print{
+ body{background:#fff;color:#000}
+ body.rp .shell,body.rp #toasts,body.rp .pal,body.rp .modalbg{display:none!important}
+ body.rp #rpt{display:block;font-size:12px;color:#000}
+ #rpt h1{font-size:18px;margin:4px 0}
+ #rpt .rhead{display:flex;justify-content:space-between;align-items:center;border-bottom:2.5px solid #000;padding-bottom:8px;margin-bottom:12px}
+ #rpt table{width:100%;border-collapse:collapse;margin:8px 0 14px}
+ #rpt th,#rpt td{border:1px solid #333;padding:6px 8px;font-size:11px;text-align:right}
+ #rpt th{background:#eee}
+ #rpt .sig{display:flex;justify-content:space-between;margin-top:44px;text-align:center;font-weight:700}
+ #rpt .sig div{width:200px;border-top:1px dotted #000;padding-top:6px}
+}
+@media(max-width:1080px){.tgrid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr 1fr}.scope{grid-template-columns:1fr}}
+@media(max-width:900px){
+ .shell{display:block}
+ .side{position:fixed;right:0;top:0;width:280px;transform:translateX(105%);transition:.25s;box-shadow:-25px 0 60px #000a;z-index:40}
+ .side.open{transform:translateX(0)}
+ .men{display:block}
+ .wrap{padding:14px}
+ .clock{display:none}
+ .org{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){.hero{padding:22px 18px}.hero h1{font-size:21px}.cards{grid-template-columns:1fr}.kpi b{font-size:19px}.org{grid-template-columns:1fr}.frm{grid-template-columns:1fr}.tbtn.hidem{display:none}}
+a.btn{text-decoration:none}
+.appgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px}
+.apptile{display:flex;flex-direction:column;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 8px 12px;text-decoration:none;color:var(--tx);text-align:center;transition:.16s;position:relative}
+.apptile:hover{transform:translateY(-2px);border-color:var(--aqua2);box-shadow:0 12px 30px #00121f66}
+[data-theme="light"] .apptile:hover{box-shadow:0 12px 26px #0a4a4016}
+.apptile .ico{width:46px;height:46px;font-size:22px;border-radius:13px;display:grid;place-items:center}
+.apptile b{font-size:10px;font-weight:700;line-height:1.65;min-height:33px;display:flex;align-items:center}
+.apptile i{position:absolute;top:8px;left:9px;font-style:normal;font-size:9px;color:var(--mut2)}
+.apptile:hover i{color:var(--aqua)}
+.livegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:11px;margin-bottom:4px}
+.lvcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+.lvh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.lvh .ico{width:30px;height:30px;font-size:14px;border-radius:9px}
+.lvh b{font-size:11px;flex:1;line-height:1.5}
+.lvdot{width:8px;height:8px;border-radius:50%;background:var(--mut2);flex:none}
+.lvdot.ok{background:var(--ok);box-shadow:0 0 0 3px #2dd48b22}.lvdot.warn{background:var(--warn)}.lvdot.bad{background:var(--bad)}
+.lvrow{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed var(--line);padding:4.5px 0;font-size:10.5px;color:var(--mut)}
+.lvrow b{font-family:var(--mono);direction:ltr;color:var(--aqua);font-size:13.5px}
+.lvmeta{font-size:8.5px;color:var(--mut2);margin-top:8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.lvft{display:flex;gap:6px;margin-top:9px}
+.card em a,.card em button{font-style:normal}
+.lkhost{font-family:var(--mono);direction:ltr;text-align:right;font-size:9px;color:var(--mut2);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side" id="side">
+ <div class="logo"><div class="mark">≈</div><div><b>مصلحة الري</b><small>المنصة الرقمية الموحدة · v2.0</small></div></div>
+ <nav class="nav" id="nav" aria-label="القائمة الرئيسية"></nav>
+ <div class="sfoot">
+  <span class="chip" id="stchip"><i></i> <span id="sttx">تخزين محلي مفعّل</span></span>
+  <div style="margin-top:8px">وزارة الموارد المائية والري<br>بيئة عرض هندسية — البيانات المبدئية استرشادية قابلة للتعديل.</div>
+ </div>
+</aside>
+<main class="main">
+ <header class="top">
+  <button class="men" id="men" aria-label="القائمة">☰</button>
+  <div class="crumb" id="crumb"><b>مركز القيادة</b></div>
+  <div class="tsp"></div>
+  <button class="tbtn" data-act="pal.open">⌕ بحث وأوامر <kbd>Ctrl K</kbd></button>
+  <button class="tbtn hidem" data-act="doc.report" title="تقرير الموقف اليومي">🖶 تقرير الموقف</button>
+  <button class="tbtn" id="instbtn" data-act="ui.install" style="display:none">📲 تثبيت</button>
+  <button class="tbtn" data-act="ui.theme" id="thbtn" title="تبديل النمط">◐</button>
+  <div class="clock" id="clk">— — : — —</div>
+ </header>
+ <div class="wrap" id="view"></div>
+</main>
+</div>
+
+<div class="modalbg" id="modal" role="dialog" aria-modal="true"><div class="modal"><button class="x" data-act="ui.mclose">×</button><div id="mbody"></div></div></div>
+
+<div class="pal" id="pal"><div class="palbox">
+ <input id="palin" placeholder="ابحث عن تطبيق أو إدارة أو أمر… (مثال: مياه راجعة / بوابات / تقرير)" autocomplete="off">
+ <div class="plist" id="pallist"></div>
+ <div class="phint"><span>↵ فتح</span><span>↑↓ تنقّل</span><span>Esc إغلاق</span><span id="palai"></span></div>
+</div></div>
+
+<div id="toasts" aria-live="polite"></div>
+<div id="rpt"></div>
+<input type="file" id="impfile" accept="application/json" style="display:none">
+<script>
+'use strict';
+/* =====================================================================
+   منصة مصلحة الري الرقمية v2.0 — نواة النظام
+   ملف واحد · Vanilla JS · بدون قوالب نصية (توافق Termux/Android)
+   ===================================================================== */
+var APPV='2.5.0';
+
+/* ---------- أدوات مساعدة ---------- */
+function $(id){return document.getElementById(id)}
+function esc(s){s=(s==null?'':String(s));return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function fmt(x,d){if(x==null||!isFinite(x))return '—';if(d==null)d=2;var neg=x<0;var s=Math.abs(x).toFixed(d);var p=s.split('.');p[0]=p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');return (neg?'−':'')+(d===0?p[0]:p.join('.'))}
+function V(id){var e=$(id);if(!e)return NaN;var v=parseFloat(String(e.value).replace(/,/g,''));return v}
+function VS(id){var e=$(id);return e?String(e.value).trim():''}
+function pad(n,w){n=String(n);while(n.length<(w||4))n='0'+n;return n}
+function todayS(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1,2)+'-'+pad(d.getDate(),2)}
+function uid(){return 'r'+Date.now().toString(36)+Math.floor(Math.random()*46656).toString(36)}
+function nrm(s){return (s||'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/ـ/g,'').toLowerCase()}
+function toast(msg,kind){var h=document.createElement('div');h.className='toast '+(kind||'');h.textContent=msg;$('toasts').appendChild(h);setTimeout(function(){h.style.opacity='0';h.style.transition='.3s'},2600);setTimeout(function(){h.remove()},3000)}
+function dl(name,text,mime){var b=new Blob([text],{type:mime||'text/plain;charset=utf-8'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(u);a.remove()},400)}
+function csvOf(rows){return '\ufeff'+rows.map(function(r){return r.map(function(c){c=(c==null?'':String(c));if(/[",\n]/.test(c))c='"'+c.replace(/"/g,'""')+'"';return c}).join(',')}).join('\n')}
+function opt(list,sel){return list.map(function(o){var v=o[0],t=o[1]||o[0];return '<option value="'+esc(v)+'"'+(v===sel?' selected':'')+'>'+esc(t)+'</option>'}).join('')}
+
+/* ---------- تخزين آمن (localStorage مع بديل بالذاكرة) ---------- */
+var LSW=(function(){var ok=false;try{localStorage.setItem('__iwra_t','1');localStorage.removeItem('__iwra_t');ok=true}catch(e){}var mem={};
+ return{ok:ok,
+  get:function(k){if(ok){try{return localStorage.getItem(k)}catch(e){}}return (k in mem)?mem[k]:null},
+  set:function(k,v){if(ok){try{localStorage.setItem(k,v);return}catch(e){}}mem[k]=v}}})();
+
+/* ---------- مخزن الحالة ---------- */
+var Store=(function(){
+ var KEY='iwra_platform_v2';var S=null;var t=null;
+ function defNodes(){return [
+  {id:'had',nm:'السد العالي',ty:'سد',km:0,us:175.40,ds:null,q:2450,mn:147,mx:182,demo:true},
+  {id:'aswan',nm:'خزان أسوان',ty:'خزان',km:7,us:111.20,ds:null,q:2450,mn:106,mx:113,demo:true},
+  {id:'esna',nm:'قناطر إسنا الجديدة',ty:'قناطر',km:167,us:76.20,ds:70.40,q:2380,mn:75.4,mx:76.6,demo:true},
+  {id:'nagh',nm:'قناطر نجع حمادي الجديدة',ty:'قناطر',km:359,us:64.80,ds:60.90,q:2290,mn:64.0,mx:65.3,demo:true},
+  {id:'assiut',nm:'قناطر أسيوط الجديدة',ty:'قناطر',km:544,us:49.30,ds:45.10,q:2140,mn:48.6,mx:49.9,demo:true},
+  {id:'delta',nm:'قناطر الدلتا',ty:'قناطر',km:953,us:13.60,ds:8.20,q:1160,mn:12.8,mx:14.1,demo:true},
+  {id:'zifta',nm:'قناطر زفتى — فرع دمياط',ty:'قناطر',km:1049,us:8.10,ds:4.90,q:420,mn:7.4,mx:8.6,br:'d',demo:true},
+  {id:'edfina',nm:'قناطر إدفينا — فرع رشيد',ty:'قناطر',km:1103,us:2.90,ds:0.60,q:180,mn:2.2,mx:3.4,br:'r',demo:true}]}
+ function defLinks(){var G='https://mohseno2002.github.io/';return [
+  {id:'lk_nile',nm:'توأم نهر النيل الرقمي',ic:'⌇',cat:'توأم رقمي',ds:'V39 — مزامنة nile_dt يومية',url:G+'Nile-river/',attach:'twin',live:{path:'nile_dt/daily/{today}',fields:[]}},
+  {id:'lk_ism',nm:'توأم ترعة الإسماعيلية',ic:'≋',cat:'توأم رقمي',ds:'IsmCanal DT · V25 PRO — قراءات المحاور اليومية',url:G+'ismailia-dt/',attach:'twin',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'الفم — أمامي (م)',p:'fom_ism.front'},{l:'الفم — تصرف (م³/ث)',p:'fom_ism.flow'},{l:'حجز المنير — أمامي (م)',p:'hgz_mnr.front'},{l:'حجز الصالحية — أمامي (م)',p:'hgz_slh.front'}]}},
+  {id:'lk_suez',nm:'توأم ترعة السويس',ic:'≈',cat:'توأم رقمي',ds:'v3.97 — قراءات الفم والكيلومترات عبر المحور',url:G+'suez-canal-dt/',attach:'twin',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'الفم — أمامي (م)',p:'suez.front'},{l:'كيلو ١٦ — أمامي (م)',p:'suez16.front'},{l:'كيلو ٤٩٫٥ — أمامي (م)',p:'suez50.front'}]}},
+  {id:'lk_mans',nm:'توأم ترعة المنصورية',ic:'≋',cat:'توأم رقمي',ds:'Digital Twin v2 لشبكة المنصورية',url:G+'Mansoria/',attach:'twin'},
+  {id:'lk_ismnet',nm:'منصة شبكات الري',ic:'⌗',cat:'توأم رقمي',ds:'التوأم الرقمي لشبكات الري — الإسماعيلية',url:G+'ismailia-canal/',attach:'twin'},
+  {id:'lk_wazir',nm:'وحدة قيادة وزير',ic:'⊞',cat:'إدارية',ds:'Hydro Command Center — نبض المحور المركزي',url:G+'wazir-console/',attach:'',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'عقد مبلّغة اليوم',p:'#count'}]}},
+  {id:'lk_tirednat',nm:'سجل الترع المتعبة — الجمهورية',ic:'!',cat:'منظومة ميدانية',ds:'الحصر القومي للترع المتعبة',url:G+'tired-canals/',attach:'tired'},
+  {id:'lk_giza',nm:'بوابة ري الجيزة',ic:'▦',cat:'إدارية',ds:'بيانات الحجوز اليومية من شيت المتابعة',url:G+'Giza-/',attach:'depts',live:{path:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQx4SgO2qck9gR6RX55GsO7ktMorG-sqnDOdnFAWO3iruSoOUHIqEEEzMoj_BFOu9oLjVjb4_7NNgjn/pub?output=csv',fields:[{l:'حجز العياط — أمامي (م)',p:'أمام حجز العياط',s:0.01},{l:'حجز العياط — خلفي (م)',p:'خلف حجز العياط',s:0.01},{l:'قراءات بالشيت',p:'#count'}]}},
+  {id:'lk_belagh',nm:'شكاوى ري الجيزة (بلاغك وصل)',ic:'☏',cat:'منظومة ميدانية',ds:'بلاغات المواطنين بأرقام مرجعية',url:G+'giza-irrigation/',attach:'complaints'},
+  {id:'lk_shsz',nm:'شكاوى ترعة السويس',ic:'☏',cat:'منظومة ميدانية',ds:'شكاوى المواطنين على ترعة السويس',url:G+'shakawa-suez/',attach:'complaints',live:{path:'https://suez-canal-dt-default-rtdb.firebaseio.com/complaints',fields:[{l:'شكاوى مسجلة',p:'#count'}]}},
+  {id:'lk_dar',nm:'استلامات دار الهندسة — حياة كريمة',ic:'▤',cat:'منظومة ميدانية',ds:'لوحة استلامات تبطين الترع',url:G+'haya-karema/',attach:'projects'},
+  {id:'lk_hyd',nm:'Hydraulics Suite Pro',ic:'∑',cat:'حاسبات',ds:'المنصة الهندسية المتكاملة',url:G+'calculator/',attach:'hydlab'},
+  {id:'lk_geo',nm:'Geometra — حاسبة هندسية',ic:'∑',cat:'حاسبات',ds:'آلة حاسبة هندسية متعددة',url:G+'Calc/',attach:''},
+  {id:'lk_news',nm:'رصد أخبار الري',ic:'▤',cat:'إدارية',ds:'رصد أخبار الري والترع والمصارف',url:G+'News/',attach:''},
+  {id:'lk_hk',nm:'لوحة حياة كريمة — التبطين',ic:'△',cat:'منظومة ميدانية',ds:'متابعة ترع المرحلتين',url:'',attach:'projects'},
+  {id:'lk_miq',nm:'مِقياس ٢٫٠ — البصمة المائية',ic:'◌',cat:'حاسبات',ds:'محرك WFN/ISO 14046',url:'',attach:'wfoot'},
+  {id:'lk_natl',nm:'المنصة الوطنية للمياه',ic:'▦',cat:'إدارية',ds:'لوحة الـ٢٧ محافظة',url:'',attach:''}]}
+ function blank(){return {ver:2,theme:'dark',kpiAdequacy:{v:94.7,demo:true},links:defLinks(),liveBase:'https://ismailia-64500-default-rtdb.europe-west1.firebasedatabase.app',liveAuto:false,
+  readings:[],canals:[],wells:[],wlog:[],structures:[],complaints:[],violations:[],dredges:[],
+  rating:{pts:[]},twin:{quota:{total:55.5,used:51.9,demo:true},nodes:defNodes()},seq:{c:0,v:0},seeded:false}}
+ function load(){try{var raw=LSW.get(KEY);S=raw?JSON.parse(raw):null}catch(e){S=null}
+  if(!S||S.ver!==2)S=blank();if(!S.links)S.links=defLinks();S.links=S.links.filter(function(l){return !(l.id==='lk_penta'&&!l.url)});upgradeLinks(S);if(!S.liveBase)S.liveBase='https://ismailia-64500-default-rtdb.europe-west1.firebasedatabase.app';if(S.liveAuto===undefined)S.liveAuto=false;return S}
+ function upgradeLinks(SS){var dl=defLinks(),i,j;
+  for(i=0;i<dl.length;i++){var ex=null;
+   for(j=0;j<SS.links.length;j++)if(SS.links[j].id===dl[i].id)ex=SS.links[j];
+   if(!ex)SS.links.push(dl[i]);
+   else{if(!ex.url&&dl[i].url)ex.url=dl[i].url;
+    if(!ex.live&&dl[i].live)ex.live=dl[i].live}}}
+ function save(){if(t)clearTimeout(t);t=setTimeout(function(){LSW.set(KEY,JSON.stringify(S));
+  var el=$('sttx');if(el)el.textContent=(LSW.ok?'حُفظ محليًا ':'جلسة مؤقتة — ')+new Date().toLocaleTimeString('en-GB');
+  var ch=$('stchip');if(ch)ch.className='chip'+(LSW.ok?'':' off')},250)}
+ function seed(){if(S.seeded)return;
+  var st=[['esna','أمام قناطر إسنا'],['nagh','أمام قناطر نجع حمادي'],['assiut','أمام قناطر أسيوط'],['delta','أمام قناطر الدلتا']];
+  var i,j,d=new Date();
+  for(i=13;i>=0;i--){var dd=new Date(d.getTime()-i*864e5);var ds=dd.getFullYear()+'-'+pad(dd.getMonth()+1,2)+'-'+pad(dd.getDate(),2);
+   for(j=0;j<st.length;j++){var nd=S.twin.nodes.filter(function(n){return n.id===st[j][0]})[0];
+    var w=Math.sin((i+j*2)/2.4);
+    S.readings.push({id:uid(),st:st[j][1],dt:ds,fr:+(nd.us+w*0.06).toFixed(2),bk:+((nd.ds||0)+w*0.05).toFixed(2),q:Math.round(nd.q+w*38),demo:true})}}
+  S.canals=[
+   {id:uid(),nm:'ترعة المريوطية',adm:'عام الجيزة',ln:52.0,st:'متوسطة',note:'تراكم إطماء بالنهايات',demo:true},
+   {id:uid(),nm:'ترعة الصفطاوية',adm:'عام الجيزة',ln:18.4,st:'حرجة',note:'انهيارات جوانب متكررة كم 9–12',demo:true},
+   {id:uid(),nm:'ترعة المنصورية',adm:'عام الجيزة',ln:31.5,st:'مستقرة',note:'أعمال تأهيل حياة كريمة منتهية',demo:true},
+   {id:uid(),nm:'ترعة الإبراهيمية — قطاع',adm:'عام المنيا',ln:60.0,st:'متوسطة',note:'حشائش غاطسة مؤثرة',demo:true},
+   {id:uid(),nm:'ترعة الإسماعيلية — قطاع',adm:'عام الإسماعيلية',ln:45.0,st:'مستقرة',note:'ضمن المعدلات التصميمية',demo:true},
+   {id:uid(),nm:'ترعة البحر اليوسفي — قطاع',adm:'عام الفيوم',ln:38.2,st:'حرجة',note:'اختناق أمام سحارة كم 21',demo:true}];
+  S.wells=[
+   {id:uid(),cd:'GW-GZ-014',gov:'الجيزة — أبو رواش',dp:120,swl:38.5,q:60,ec:1.1,demo:true},
+   {id:uid(),cd:'GW-GZ-027',gov:'الجيزة — الواحات',dp:220,swl:55.0,q:95,ec:0.7,demo:true},
+   {id:uid(),cd:'GW-BH-102',gov:'البحيرة — النوبارية',dp:95,swl:22.4,q:80,ec:1.9,demo:true},
+   {id:uid(),cd:'GW-MN-031',gov:'المنيا — غرب النيل',dp:150,swl:41.0,q:70,ec:0.9,demo:true}];
+  var w0=S.wells[0].cd;for(i=5;i>=0;i--){var d2=new Date(d.getTime()-i*30*864e5);
+   S.wlog.push({id:uid(),wl:w0,dt:d2.getFullYear()+'-'+pad(d2.getMonth()+1,2)+'-'+pad(d2.getDate(),2),lvl:+(38.5+ (5-i)*0.22).toFixed(2),demo:true})}
+  S.structures=[
+   {id:uid(),nm:'قناطر الدلتا — فرع رشيد',ty:'قناطر',adm:'المنشآت الكبرى',yr:1939,st:'تحت الملاحظة',demo:true},
+   {id:uid(),nm:'هدار مغاغة',ty:'هدار',adm:'عام المنيا',yr:1952,st:'تحتاج تأهيل',demo:true},
+   {id:uid(),nm:'سحارة سرابيوم',ty:'سحارة',adm:'عام الإسماعيلية',yr:2019,st:'جيدة',demo:true},
+   {id:uid(),nm:'بوابة رياح البحيرة كم 3',ty:'بوابة',adm:'الرياحات',yr:1988,st:'جيدة',demo:true},
+   {id:uid(),nm:'محطة رفع اللاهون',ty:'محطة رفع',adm:'عام الفيوم',yr:1996,st:'تحت الملاحظة',demo:true},
+   {id:uid(),nm:'هدار ديروط — قطاع',ty:'هدار',adm:'عام أسيوط',yr:1872,st:'حرجة',demo:true}];
+  S.complaints=[
+   {id:uid(),ref:'ش-2026-0001',tp:'نقص مياه بنهاية ترعة',gov:'الجيزة',dsc:'شكوى مزارعي نهاية ترعة الصفطاوية',st:'جار الفحص',dt:todayS(),demo:true},
+   {id:uid(),ref:'ش-2026-0002',tp:'تعدٍ على جسر',gov:'القليوبية',dsc:'بناء مخالف على جسر رياح التوفيقي',st:'جديدة',dt:todayS(),demo:true},
+   {id:uid(),ref:'ش-2026-0003',tp:'تلوث مجرى',gov:'الغربية',dsc:'صرف مخالف بمصرف فرعي',st:'منتهية',dt:todayS(),demo:true}];
+  S.violations=[
+   {id:uid(),ref:'ت-2026-0001',tp:'بناء داخل حرم النيل',gov:'الجيزة — الحوامدية',dsc:'إشغال 120م² بالطمي',st:'قائمة',dt:todayS(),demo:true},
+   {id:uid(),ref:'ت-2026-0002',tp:'ردم جزئي',gov:'المنوفية',dsc:'ردم حافة فرع رشيد بطول 40م',st:'جار الإزالة',dt:todayS(),demo:true},
+   {id:uid(),ref:'ت-2026-0003',tp:'مرسى غير مرخص',gov:'الأقصر',dsc:'مرسى عائم بدون ترخيص',st:'أزيلت',dt:todayS(),demo:true}];
+  S.seq={c:3,v:3};S.seeded=true;save()}
+ function clearDemo(){var ks=['readings','canals','wells','wlog','structures','complaints','violations'];
+  ks.forEach(function(k){S[k]=S[k].filter(function(r){return !r.demo})});
+  if(S.kpiAdequacy&&S.kpiAdequacy.demo)S.kpiAdequacy=null;
+  if(S.twin.quota.demo){S.twin.quota.used=0;S.twin.quota.demo=false}
+  save()}
+ return{load:load,save:save,seed:seed,clearDemo:clearDemo,defNodes:defNodes,defLinks:defLinks,upgradeLinks:upgradeLinks,
+  get:function(){return S},KEY:KEY}
+})();
+var ST=null; /* مرجع الحالة الحية */
+
+/* السنة المائية: تبدأ أول أغسطس */
+function waterYear(){var n=new Date();var y=n.getMonth()>=7?n.getFullYear():n.getFullYear()-1;
+ var start=new Date(y,7,1);var days=Math.max(1,Math.min(366,Math.round((n-start)/864e5)+1));
+ return{label:y+'/'+(y+1),days:days,frac:days/365}}
+
+/* ---------- سجلّ القطاعات والتطبيقات ---------- */
+var REG={
+ sectors:[
+  {id:'irrigation',ic:'≈',nm:'قطاع الري',ds:'إدارة وتوزيع المياه وتشغيل شبكة الترع والإدارات العامة وهندسات الري حتى نهايات الترع.',
+   org:[['الإدارات المركزية','12'],['الإدارات العامة','46'],['هندسات الري','182'],['الترع والمنشآت','12,840']],
+   apps:['hydlab','readings','rotation','tired','ends','depts','mesqas']},
+  {id:'barrages',ic:'▥',nm:'قطاع الخزانات والقناطر الكبرى',ds:'تشغيل وصيانة القناطر والخزانات والمنشآت المائية الكبرى على النيل وفرعيه والرياحات.',
+   apps:['gates','structures','inspect','maint','rehab']},
+  {id:'ground',ic:'◉',nm:'قطاع المياه الجوفية',ds:'إدارة الآبار والخزانات الجوفية ومراقبة السحب والنوعية ومؤشرات الاستنزاف.',
+   apps:['wells','quality','licenses','depletion','rain']},
+  {id:'nile',ic:'⌇',nm:'قطاع تطوير وحماية نهر النيل',ds:'حماية مجرى النيل وفرعيه وإدارة التراخيص والتعديات وأعمال ضبط النهر.',
+   apps:['violations','rivertrain','islands','marinas','sat']},
+  {id:'expansion',ic:'⌗',nm:'قطاع التوسع الأفقي والمشروعات',ds:'التخطيط المائي لمشروعات الاستصلاح والتوسع الزراعي والمجتمعات الجديدة.',
+   apps:['demand','wfoot','reclaim','newdelta','toshka']},
+  {id:'shared',ic:'⊞',nm:'التطبيقات المشتركة',ds:'منظومات موحدة تخدم جميع القطاعات والإدارات دون تكرار للبيانات.',
+   apps:['linkhub','crisis','complaints','dredge','docs','assets','projects','fieldinsp']}],
+ apps:{
+  linkhub:{ic:'⇱',nm:'بوابة تطبيقاتي',ds:'ربط منظومتك القائمة (التوائم، بلاغك وصل، مِقياس…) لتفتح من داخل المنصة — الروابط تُدار محليًا وتظهر تلقائيًا على البطاقات المرتبطة.',tool:1},
+  hydlab:{ic:'≋',nm:'المعمل الهيدروليكي للترع',ds:'مانينج للقطاع شبه المنحرف، الأعماق الطبيعية والحرجة، منحنى المياه الراجعة GVF، ومحوّل وحدات الري.',tool:1},
+  readings:{ic:'⌁',nm:'المناسيب والتصرفات',ds:'سجل القراءات اليومية للمحطات، معايرة منحنيات القياس Q–H، والتحليل الزمني.',tool:1},
+  rotation:{ic:'↻',nm:'المناوبات والتوزيع',ds:'حساب تصرف المناوبة من الزمام والمقنن ومقارنة المنصرف بالاحتياج الفعلي.',tool:1},
+  tired:{ic:'!',nm:'سجل الترع المتعبة',ds:'حصر الاختناقات وتصنيف الحالة وخطط المعالجة على مستوى الإدارات.',tool:1},
+  ends:{ic:'◎',nm:'نهايات الترع',ds:'مؤشر كفاية النهايات: مقارنة الوارد فعليًا بالمقرر وتقدير درجة العدالة.',tool:1},
+  gates:{ic:'↕',nm:'تشغيل البوابات والهدارات',ds:'تصرفات الفتحات (حر/مغمور)، الهدارات مع تصحيح الغمر، وحساب الفتحة المطلوبة لتصرف مستهدف.',tool:1},
+  structures:{ic:'▥',nm:'سجل القناطر والمنشآت',ds:'الملف الفني للمنشآت المائية: النوع، سنة الإنشاء، الإدارة، والحالة العامة.',tool:1},
+  inspect:{ic:'⌕',nm:'الفحص الإنشائي',ds:'مؤشر حالة مرجّح لعناصر المنشأ (منهجية درجات ١–٤) مع التصنيف والإجراء المقترح.',tool:1},
+  wells:{ic:'◉',nm:'قاعدة بيانات الآبار',ds:'سجل الآبار وقياسات المناسيب الدورية ومعدل الهبوط وحساب هبوط التشغيل (Cooper–Jacob).',tool:1},
+  quality:{ic:'◇',nm:'نوعية المياه والملوحة',ds:'تصنيف مياه الري من التوصيل الكهربي EC وتقدير الأملاح الذائبة والإرشادات.',tool:1},
+  violations:{ic:'⊘',nm:'التعديات والإزالات',ds:'حصر مخالفات مجرى النيل وحرمه بأرقام مرجعية ومتابعة موقف الإزالة.',tool:1},
+  demand:{ic:'∑',nm:'الاحتياجات المائية',ds:'حساب الاحتياج بالمقنن المباشر أو بمنهجية FAO-56 (ETo×Kc) مع كفاءة التوصيل.',tool:1},
+  crisis:{ic:'!',nm:'غرفة الأزمات والإنذار المبكر',ds:'تجميع تلقائي للتنبيهات من كل المنظومات: مناسيب خارج النطاق، ترع حرجة، بلاغات مفتوحة.',tool:1},
+  complaints:{ic:'☏',nm:'منظومة الشكاوى',ds:'استقبال وتصنيف الشكاوى بأرقام مرجعية موحدة ومتابعة حالة الفحص.',tool:1},
+  dredge:{ic:'⌁',nm:'التطهيرات',ds:'حساب أحجام ناتج التطهير والتكلفة والمدة، مع قائمة أعمال الموسم.',tool:1},
+  docs:{ic:'▤',nm:'مركز الوثائق والتقارير',ds:'تقرير الموقف اليومي القابل للطباعة، النسخ الاحتياطية، والاستيراد والتصدير.',tool:1},
+  depts:{ic:'▦',nm:'إدارات الري',ds:'بوابات الإدارات العامة وهندسات الري بالمحافظات.',
+   scope:{pr:35,sc:['هيكل تنظيمي مُرقمن: إدارة مركزية ← إدارة عامة ← هندسة ← ترعة','بطاقة أداء لكل إدارة: الزمام، أطوال الترع، المنشآت، البلاغات','ربط كل سجل في المنصة بالإدارة المختصة تلقائيًا'],kp:['نسبة اكتمال بيانات الهندسات','عدد السجلات المرتبطة لكل إدارة'],integ:'يتكامل مع: سجل الترع المتعبة، الشكاوى، المناسيب والتصرفات'}},
+  mesqas:{ic:'⤴',nm:'المساقي المطورة',ds:'سجل المساقي والأعمال التي آلت اختصاصاتها.',
+   scope:{pr:20,sc:['سجل المساقي المطورة ومحطات الرفع التابعة','موقف التشغيل والصيانة والأعطال','ربط شكاوى نهايات المساقي بالترعة الأم'],kp:['نسبة المساقي العاملة','متوسط زمن إصلاح العطل'],integ:'يتكامل مع: نهايات الترع، منظومة الشكاوى'}},
+  maint:{ic:'⚙',nm:'الصيانة الوقائية',ds:'خطط الصيانة والتنبيه المبكر للأعطال.',
+   scope:{pr:30,sc:['خطة صيانة وقائية دورية لكل منشأ حسب حالته','أوامر شغل بالتكاليف وقطع الغيار','تنبيه مبكر قبل مواسم أقصى التصرفات'],kp:['نسبة تنفيذ الخطة السنوية','متوسط الزمن بين الأعطال'],integ:'يتكامل مع: سجل المنشآت، الفحص الإنشائي'}},
+  rehab:{ic:'△',nm:'تأهيل المنشآت',ds:'مشروعات التأهيل والعقود ونسب الإنجاز.',
+   scope:{pr:25,sc:['نطاق مشروعات التأهيل والإحلال والاعتمادات','نسب إنجاز فنية ومالية شهرية','ترتيب الأولويات وفق نتائج الفحص الإنشائي'],kp:['نسبة الإنجاز الفني','الانحراف عن الجدول الزمني'],integ:'يتكامل مع: الفحص الإنشائي، محفظة المشروعات'}},
+  licenses:{ic:'▤',nm:'تراخيص الحفر والسحب',ds:'إصدار ومراجعة وتجديد تراخيص الآبار.',
+   scope:{pr:40,sc:['دورة إلكترونية كاملة لترخيص الحفر والتعميق','مراجعة فنية: العمق، التداخل بين الآبار، معدل السحب','متابعة الالتزام بالعدادات والتجديد'],kp:['متوسط زمن إصدار الترخيص','نسبة الآبار المرخصة'],integ:'يتكامل مع: قاعدة الآبار، نوعية المياه'}},
+  depletion:{ic:'↘',nm:'تراجع المياه الجوفية',ds:'التغير الزمني والإنذار من الاستنزاف.',
+   scope:{pr:45,sc:['رصد التغير الزمني لمناسيب الخزان الجوفي','خرائط مناطق الإجهاد والاستنزاف','عتبات إنذار لمعدل الهبوط السنوي'],kp:['معدل الهبوط م/سنة','عدد المناطق الحرجة'],integ:'مبني على: قياسات المناسيب في قاعدة الآبار'}},
+  rain:{ic:'☂',nm:'حصاد الأمطار والسيول',ds:'المنشآت والسعات وموقف السيول.',
+   scope:{pr:20,sc:['حصر منشآت الحصاد وسعاتها التخزينية','موقف السيول والبحيرات الجبلية لحظيًا','خطط طوارئ مخرات السيول'],kp:['السعة التخزينية المتاحة','جاهزية المخرات %'],integ:'يتكامل مع: غرفة الأزمات والإنذار المبكر'}},
+  rivertrain:{ic:'⌇',nm:'ضبط نهر النيل',ds:'التكريك والترسيب وتغير المجرى.',
+   scope:{pr:30,sc:['أعمال ضبط المجرى: تكريك وحماية جوانب','رصد الترسيب والنحر بالمقاطع الدورية','برنامج المقاطع العرضية المرجعية'],kp:['أحجام التكريك السنوية','عدد المقاطع المحدّثة'],integ:'يتكامل مع: صور الأقمار الصناعية'}},
+  islands:{ic:'◇',nm:'الجزر النيلية',ds:'الحصر الجغرافي والاستخدامات.',
+   scope:{pr:25,sc:['حصر جغرافي للجزر واستخداماتها','الوضع القانوني والمحميات الطبيعية','رصد التغير المساحي دوريًا'],kp:['عدد الجزر الموثقة','نسبة الجزر محدثة البيانات'],integ:'يتكامل مع: التعديات، الأقمار الصناعية'}},
+  marinas:{ic:'▤',nm:'التراخيص والمراسي',ds:'طلبات الأعمال داخل المجرى.',
+   scope:{pr:30,sc:['دورة تراخيص الأعمال داخل المجرى والمراسي','الاشتراطات الفنية وخطوط التنظيم','متابعة الالتزام ورصد المخالفات'],kp:['متوسط زمن دراسة الطلب','نسبة الالتزام بالاشتراطات'],integ:'يتكامل مع: التعديات والإزالات'}},
+  sat:{ic:'⊙',nm:'صور الأقمار الصناعية',ds:'كشف التغيرات والمخالفات.',
+   scope:{pr:15,sc:['مقارنة دورية لمرئيات المجرى وحرمه','كشف تلقائي للتغيرات والتعديات المحتملة','أرشيف زمني للمواقع الحرجة'],kp:['تغيرات مكتشفة/شهر','زمن التحقق الميداني'],integ:'يغذّي: التعديات والإزالات، ضبط النهر'}},
+  reclaim:{ic:'⌗',nm:'مشروعات الاستصلاح',ds:'المواقع والزمامات والمصادر.',
+   scope:{pr:30,sc:['مواقع الاستصلاح وزماماتها','مصادر المياه المخصصة لكل مشروع','موقف التنفيذ والتشغيل'],kp:['الزمام المستصلح (فدان)','الاحتياج المخصص (مليون م³)'],integ:'يتكامل مع: الاحتياجات المائية'}},
+  newdelta:{ic:'△',nm:'الدلتا الجديدة',ds:'المشروعات والشبكات والتنفيذ.',
+   scope:{pr:20,sc:['شبكات النقل والمحطات الكبرى','جدولة الضخ ومصادر الخلط','متابعة الإنشاءات ونسب التنفيذ'],kp:['طاقة الضخ المتاحة م³/ث','نسبة تنفيذ الشبكات'],integ:'يتكامل مع: الاحتياجات المائية، المشروعات'}},
+  toshka:{ic:'◫',nm:'توشكى وجنوب الوادي',ds:'المآخذ والمحطات والترع.',
+   scope:{pr:25,sc:['مأخذ ومحطات الرفع وترعة الشيخ زايد','مناسيب بحيرة ناصر والتشغيل الأمثل','زمامات جنوب الوادي المنزرعة'],kp:['تصرفات المآخذ م³/ث','الزمام المنزرع (فدان)'],integ:'يتكامل مع: التوأم الرقمي للنيل'}},
+  wfoot:{ic:'◌',nm:'البصمة المائية',ds:'كفاءة استخدام المياه.',
+   scope:{pr:55,sc:['البصمة الزرقاء والرمادية للاستخدامات الكبرى','مؤشر م³/طن منتج للكفاءة القطاعية','منهجية WFN ومعيار ISO 14046'],kp:['م³/فدان موسمي','البصمة الرمادية م³/سنة'],integ:'المرجع التنفيذي: منصة مِقياس 2.0 للبصمة الصناعية'}},
+  assets:{ic:'▦',nm:'الأصول والمنشآت',ds:'السجل الموحد للأصول.',
+   scope:{pr:30,sc:['سجل موحد: منشآت ومحطات ومعدات','دورة حياة الأصل والقيمة الدفترية','ربط الأصل بالإدارة وخطة الصيانة'],kp:['نسبة الأصول الموثقة','أصول تجاوزت العمر الافتراضي'],integ:'يتكامل مع: سجل المنشآت، قاعدة الآبار'}},
+  projects:{ic:'△',nm:'محفظة المشروعات',ds:'الاعتمادات والعقود والتنفيذ.',
+   scope:{pr:35,sc:['الاعتمادات والعقود والمستخلصات','منحنى الإنجاز المخطط مقابل الفعلي','رصد مخاطر التعثر والإجراءات'],kp:['نسبة الصرف من الاعتماد','عدد المشروعات المتعثرة'],integ:'يتكامل مع: تأهيل المنشآت، التطهيرات'}},
+  fieldinsp:{ic:'⌕',nm:'التفتيش الفني',ds:'المرور والإجراءات التصحيحية.',
+   scope:{pr:25,sc:['خطط المرور والتفتيش الدوري','محاضر الملاحظات والإجراءات التصحيحية','متابعة غلق الملاحظات بالمستندات'],kp:['نسبة غلق الملاحظات','ملاحظات متكررة لكل إدارة'],integ:'يتكامل مع: إدارات الري، الفحص الإنشائي'}}
+ },
+ sectorOf:function(k){for(var i=0;i<REG.sectors.length;i++)if(REG.sectors[i].apps.indexOf(k)>=0)return REG.sectors[i];return null}
+};
+/* =====================================================================
+   ENG — المحرك الهيدروليكي (دوال نقية + أثر حساب مفصّل)
+   المرجعية: مانينج، الطاقة النوعية، GVF بطريقة RK4، معادلات الفتحات
+   والهدارات، معايرة Q–H بالمربعات الصغرى، Cooper–Jacob.
+   ===================================================================== */
+function stp(k,f,s,r){return{k:k,f:f,s:s,r:r}}
+var ENG=(function(){
+ var g=9.81;
+ function sec(b,m,y){var A=(b+m*y)*y,T=b+2*m*y,P=b+2*y*Math.sqrt(1+m*m);return{A:A,T:T,P:P,R:P>0?A/P:0}}
+ function bis(f,lo,hi){var fl=f(lo),fh=f(hi);if(!isFinite(fl)||!isFinite(fh)||fl*fh>0)return NaN;
+  for(var i=0;i<110;i++){var md=(lo+hi)/2,fm=f(md);if(!isFinite(fm))return NaN;
+   if(Math.abs(fm)<1e-10||(hi-lo)<1e-8)return md;
+   if(fl*fm<=0){hi=md;fh=fm}else{lo=md;fl=fm}}return (lo+hi)/2}
+ function qman(b,m,y,n,S){var s=sec(b,m,y);return(1/n)*s.A*Math.pow(s.R,2/3)*Math.sqrt(S)}
+ function yN(Q,b,m,n,S){var f=function(y){return qman(b,m,y,n,S)-Q};var hi=1,k=0;
+  while(f(hi)<0&&k<70){hi*=1.5;k++}if(f(hi)<0)return NaN;return bis(f,1e-5,hi)}
+ function yC(Q,b,m){var f=function(y){var s=sec(b,m,y);return Q*Q*s.T/(g*Math.pow(s.A,3))-1};
+  var hi=1,k=0;while(f(hi)>0&&k<70){hi*=1.5;k++}if(f(hi)>0)return NaN;return bis(f,1e-5,hi)}
+ function frd(Q,b,m,y){var s=sec(b,m,y);var v=Q/s.A;return v/Math.sqrt(g*s.A/s.T)}
+
+ /* --- ١) التصرف من عمق معلوم --- */
+ function flowFromDepth(o){var b=o.b,m=o.m,n=o.n,S=o.S,y=o.y;var tr=[];
+  var s=sec(b,m,y);var Q=qman(b,m,y,n,S);var Vv=Q/s.A;var Fr=frd(Q,b,m,y);
+  tr.push(stp('عناصر القطاع','A=(b+m·y)·y ، P=b+2y√(1+m²) ، R=A/P',
+   'A=('+fmt(b,2)+'+'+fmt(m,2)+'×'+fmt(y,2)+')×'+fmt(y,2)+' ، P='+fmt(b,2)+'+2×'+fmt(y,2)+'×√(1+'+fmt(m*m,2)+')',
+   'A='+fmt(s.A,3)+' m² ، R='+fmt(s.R,3)+' m'));
+  tr.push(stp('معادلة مانينج','Q=(1/n)·A·R^(2/3)·√S',
+   'Q=(1/'+fmt(n,3)+')×'+fmt(s.A,3)+'×'+fmt(s.R,3)+'^0.667×√'+S,
+   'Q='+fmt(Q,3)+' m³/s'));
+  tr.push(stp('السرعة ورقم فرود','V=Q/A ، Fr=V/√(g·A/T)',
+   'V='+fmt(Q,3)+'/'+fmt(s.A,3)+' ، Fr='+fmt(Vv,3)+'/√(9.81×'+fmt(s.A/s.T,3)+')',
+   'V='+fmt(Vv,3)+' m/s ، Fr='+fmt(Fr,3)));
+  var reg=Fr<0.99?'سريان هادئ (تحت حرج)':(Fr>1.01?'سريان جارف (فوق حرج)':'سريان حرج');
+  var vv=Vv<0.30?['السرعة أقل من حد الإطماء (0.30 م/ث) — متوقَّع ترسيب','warn']:
+        (Vv>1.50?['السرعة أعلى من حد النحر التقريبي للقنوات الترابية (1.50 م/ث)','bad']:
+        ['السرعة ضمن النطاق الآمن (0.30 – 1.50 م/ث) للقنوات الترابية','ok']);
+  return{Q:Q,V:Vv,Fr:Fr,A:s.A,R:s.R,T:s.T,reg:reg,vTxt:vv[0],vCls:vv[1],trace:tr}}
+
+ /* --- ٢) الأعماق من تصرف معلوم --- */
+ function depthsFromQ(o){var b=o.b,m=o.m,n=o.n,S=o.S,Q=o.Q;var tr=[];
+  var yn=yN(Q,b,m,n,S),yc=yC(Q,b,m);
+  tr.push(stp('العمق الطبيعي yₙ','حل مانينج عدديًا: Q=(1/n)·A(y)·R(y)^(2/3)·√S','حل بالتنصيف حتى دقة 10⁻⁸ م','yₙ='+fmt(yn,3)+' m'));
+  tr.push(stp('العمق الحرج y꜀','شرط الحرجية: Q²·T/(g·A³)=1','حل بالتنصيف حتى دقة 10⁻⁸ م','y꜀='+fmt(yc,3)+' m'));
+  var sn=sec(b,m,yn),Vn=Q/sn.A,Frn=frd(Q,b,m,yn);
+  tr.push(stp('عند العمق الطبيعي','V=Q/A ، Fr=V/√(g·A/T)','V='+fmt(Q,2)+'/'+fmt(sn.A,3),'V='+fmt(Vn,3)+' m/s ، Fr='+fmt(Frn,3)));
+  var slope=(isFinite(yn)&&isFinite(yc))?(yn>yc?'ميل ضعيف (Mild) — التحكم من الخلف':'ميل شديد (Steep) — التحكم من الأمام'):'—';
+  return{yn:yn,yc:yc,Vn:Vn,Frn:Frn,slope:slope,trace:tr}}
+
+ /* --- ٣) منحنى المياه الراجعة GVF بطريقة RK4 --- */
+ function gvf(o){var b=o.b,m=o.m,n=o.n,S0=o.S,Q=o.Q,y0=o.y0;
+  var dx=o.dx||50,Lx=o.L||30000;var tr=[];
+  var yn=yN(Q,b,m,n,S0),yc=yC(Q,b,m);
+  function Sf(y){var s=sec(b,m,y);return Math.pow(n*Q/(s.A*Math.pow(s.R,2/3)),2)}
+  function Fr2(y){var s=sec(b,m,y);return Q*Q*s.T/(g*Math.pow(s.A,3))}
+  function fUp(y){var d=1-Fr2(y);if(Math.abs(d)<2e-3)d=(d<0?-2e-3:2e-3);return -((S0-Sf(y))/d)}
+  var pts=[{x:0,y:y0}],y=y0,s=0,stop='length',L1=null;
+  var N=Math.max(4,Math.floor(Lx/dx));
+  for(var i=0;i<N;i++){var h=dx;
+   var k1=fUp(y),k2=fUp(y+h*k1/2),k3=fUp(y+h*k2/2),k4=fUp(y+h*k3);
+   var y2=y+h*(k1+2*k2+2*k3+k4)/6;s+=dx;
+   if(!isFinite(y2)||y2<=0){stop='divergence';break}
+   pts.push({x:s,y:y2});
+   if(L1===null&&isFinite(yn)&&Math.abs(y2-yn)<=0.01*yn)L1=s;
+   if(isFinite(yn)&&Math.abs(y2-yn)<=0.003*yn){stop='asymptote';y=y2;break}
+   if(isFinite(yc)&&y2<=yc*1.005){stop='critical';y=y2;break}
+   y=y2}
+  var prof='—';
+  if(isFinite(yn)&&isFinite(yc)){
+   if(yn>yc)prof=(y0>yn?'M1 — ارتفاع منسوب خلف منشأ (مياه راجعة)':(y0>yc?'M2 — انخفاض نحو سقوط حر/مأخذ':'M3 — خلف بوابة بتصرف جارف'));
+   else prof=(y0>yc?'S1 — خلف منشأ على ميل شديد':(y0>yn?'S2':'S3'))}
+  tr.push(stp('المعادلة الحاكمة','dy/dx=(S₀−S_f)/(1−Fr²) ، S_f=(n·Q)²/(A²·R^{4/3})','تكامل عددي RK4 عكس الاتجاه بخطوة Δx='+fmt(dx,0)+' م','عدد النقاط='+pts.length));
+  tr.push(stp('الأعماق المرجعية','yₙ من مانينج ، y꜀ من شرط الحرجية','—','yₙ='+fmt(yn,3)+' م ، y꜀='+fmt(yc,3)+' م'));
+  if(L1!==null)tr.push(stp('المدى المؤثر','المسافة حتى |y−yₙ|≤1%','قراءة من ناتج التكامل','L₉₉='+fmt(L1/1000,2)+' كم'));
+  return{pts:pts,yn:yn,yc:yc,prof:prof,stop:stop,L1:L1,end:y,dist:s,trace:tr}}
+
+ /* --- ٤) بوابات (فتحات) --- */
+ function gateQ(a,o){var H1=o.H1,H2=o.H2,B=o.B,N=o.N||1;
+  var mode=o.mode;if(mode==='auto')mode=(isFinite(H2)&&H2>a)?'sub':'free';
+  var Cd=(o.Cd||0.58),Cs=(o.Cs||0.80),q1;
+  if(mode==='free')q1=Cd*B*a*Math.sqrt(2*g*H1);
+  else q1=Cs*B*a*Math.sqrt(2*g*Math.max(H1-H2,0));
+  return{Q:q1*N,q1:q1,mode:mode,Cd:Cd,Cs:Cs}}
+ function gateFlow(o){var r=gateQ(o.a,o);var tr=[];
+  var head=(r.mode==='free')?o.H1:(o.H1-o.H2);
+  tr.push(stp('نمط السريان',r.mode==='free'?'حر: عمق المؤخر ≤ فتحة البوابة':'مغمور: عمق المؤخر أعلى من فتحة البوابة','H₂='+fmt(o.H2,2)+' م مقابل a='+fmt(o.a,2)+' م',r.mode==='free'?'سريان حر':'سريان مغمور'));
+  tr.push(stp('تصرف الفتحة الواحدة',r.mode==='free'?'q=C_d·B·a·√(2g·H₁)':'q=C_s·B·a·√(2g·(H₁−H₂))',
+   'q='+fmt(r.mode==='free'?r.Cd:r.Cs,2)+'×'+fmt(o.B,2)+'×'+fmt(o.a,2)+'×√(19.62×'+fmt(head,2)+')','q='+fmt(r.q1,3)+' m³/s'));
+  tr.push(stp('إجمالي الفتحات','Q=N×q','Q='+(o.N||1)+'×'+fmt(r.q1,3),'Q='+fmt(r.Q,3)+' m³/s'));
+  var vj=Math.sqrt(2*g*head);
+  return{Q:r.Q,q1:r.q1,mode:r.mode,vj:vj,trace:tr}}
+ function gateSolveA(o){var f=function(a){return gateQ(a,o).Q-o.Qt};
+  var hi=Math.max(0.05,(isFinite(o.H1)?o.H1:3)*0.95);
+  var a=bis(f,0.005,hi);var tr=[];
+  if(isFinite(a)){var r=gateQ(a,o);
+   tr.push(stp('حل عكسي للفتحة','إيجاد a بحيث Q(a)=Q_target بالتنصيف','مدى البحث a∈[0.005،'+fmt(hi,2)+'] م','a='+fmt(a,3)+' م'));
+   tr.push(stp('تحقق','Q(a) بعد الحل','—','Q='+fmt(r.Q,3)+' m³/s ('+(r.mode==='free'?'حر':'مغمور')+')'));
+   return{a:a,Q:r.Q,mode:r.mode,trace:tr}}
+  return{a:NaN,trace:[stp('تعذر الحل','التصرف المستهدف خارج قدرة الفتحات بالمناسيب الحالية','جرّب زيادة عدد الفتحات أو مراجعة المناسيب','—')]}}
+
+ /* --- ٥) هدارات --- */
+ function weir(o){var B=o.B,H1=o.H1,H2=o.H2||0,Cd=o.Cd||1,tr=[];
+  var C=(o.type==='sharp')?1.84:1.705;
+  var Q0=Cd*C*B*Math.pow(H1,1.5);
+  tr.push(stp('معادلة الهدار','Q='+(o.type==='sharp'?'1.84':'1.705')+'·C·B·H^{1.5}','Q='+fmt(Cd,2)+'×'+C+'×'+fmt(B,2)+'×'+fmt(H1,2)+'^1.5','Q₀='+fmt(Q0,3)+' m³/s'));
+  var f=1,sub=false;
+  if(H2>0&&H2<H1){sub=true;f=Math.pow(1-Math.pow(H2/H1,1.5),0.385);
+   tr.push(stp('تصحيح الغمر (Villemonte)','f=[1−(H₂/H₁)^{1.5}]^{0.385}','f=[1−('+fmt(H2,2)+'/'+fmt(H1,2)+')^1.5]^0.385','f='+fmt(f,3)))}
+  var Q=Q0*f;
+  tr.push(stp('التصرف النهائي','Q=f×Q₀','Q='+fmt(f,3)+'×'+fmt(Q0,3),'Q='+fmt(Q,3)+' m³/s'));
+  return{Q:Q,f:f,sub:sub,trace:tr}}
+
+ /* --- ٦) معايرة منحنى القياس Q=C·(G−G₀)ⁿ --- */
+ function ratingFit(pts,g0mode){var P=pts.filter(function(p){return isFinite(p.g)&&isFinite(p.q)&&p.q>0});
+  if(P.length<3)return{err:'يلزم ٣ نقاط صالحة على الأقل'};
+  var gmin=Math.min.apply(null,P.map(function(p){return p.g}));
+  function fit(g0){var n=0,sx=0,sy=0,sxx=0,sxy=0,i;
+   for(i=0;i<P.length;i++){var d=P[i].g-g0;if(d<=0)return null;
+    var x=Math.log(d),y=Math.log(P[i].q);n++;sx+=x;sy+=y;sxx+=x*x;sxy+=x*y}
+   var den=n*sxx-sx*sx;if(Math.abs(den)<1e-12)return null;
+   var b1=(n*sxy-sx*sy)/den,a0=(sy-b1*sx)/n;
+   var ssr=0,sst=0,ym=sy/n;
+   for(i=0;i<P.length;i++){var yy=Math.log(P[i].q),yh=a0+b1*Math.log(P[i].g-g0);ssr+=(yy-yh)*(yy-yh);sst+=(yy-ym)*(yy-ym)}
+   return{C:Math.exp(a0),n:b1,g0:g0,R2:sst>0?1-ssr/sst:1}}
+  var best=null;
+  if(g0mode==='auto'){var lo=Math.min(0,gmin-2),steps=80;
+   for(var k=0;k<steps;k++){var g0=lo+(gmin-0.002-lo)*k/(steps-1);var r=fit(g0);
+    if(r&&(!best||r.R2>best.R2))best=r}}
+  else best=fit(g0mode);
+  if(!best)return{err:'تعذرت الملاءمة — راجع النقاط ومنسوب الصفر'};
+  var tr=[stp('التحويل اللوغاريتمي','ln Q = ln C + n·ln(G−G₀)','انحدار خطي بالمربعات الصغرى على '+P.length+' نقطة','C='+fmt(best.C,4)+' ، n='+fmt(best.n,3)),
+   stp('منسوب الصفر G₀',g0mode==='auto'?'مسح شبكي لتعظيم R²':'قيمة مُدخلة','—','G₀='+fmt(best.g0,3)+' م'),
+   stp('جودة الملاءمة','R² على اللوغاريتمات','—','R²='+fmt(best.R2,4))];
+  best.f=function(gg){return best.C*Math.pow(Math.max(gg-best.g0,0),best.n)};
+  best.trace=tr;best.N=P.length;return best}
+
+ /* --- ٧) المناوبات: زمام × مقنن --- */
+ function rotation(o){var Z=o.Z,duty=o.duty,on=o.on,off=o.off,tr=[];
+  var Qd=Z*duty;var Qc=Qd/86400;var cyc=on+off;var Qr=Qc*cyc/on;var qls=duty/86.4;
+  tr.push(stp('الاحتياج اليومي','V=زمام×مقنن','V='+fmt(Z,0)+'×'+fmt(duty,1),'V='+fmt(Qd,0)+' م³/يوم'));
+  tr.push(stp('التصرف المستمر المكافئ','Q꜀=V/86400','Q꜀='+fmt(Qd,0)+'/86400','Q꜀='+fmt(Qc,3)+' م³/ث'));
+  tr.push(stp('تصرف فترة العمالة','Q_r=Q꜀×(عمالة+بطالة)/عمالة','Q_r='+fmt(Qc,3)+'×'+cyc+'/'+on,'Q_r='+fmt(Qr,3)+' م³/ث'));
+  tr.push(stp('المعدل النوعي','q=مقنن/86.4','q='+fmt(duty,1)+'/86.4','q='+fmt(qls,3)+' لتر/ث/فدان'));
+  return{Qd:Qd,Qc:Qc,Qr:Qr,qls:qls,cyc:cyc,trace:tr}}
+
+ /* --- ٨) الاحتياجات المائية FAO-56 --- */
+ function demandFao(o){var tr=[];var ETc=o.kc*o.et0;var NIR=Math.max(ETc-(o.pe||0),0);var GIR=NIR/(o.eff||0.7);
+  var v=GIR*4.2*o.area;var qls=v*1000/86400;var duty=GIR*4.2;
+  tr.push(stp('البخرنتح المحصولي','ETc=Kc×ETo','ETc='+fmt(o.kc,2)+'×'+fmt(o.et0,2),'ETc='+fmt(ETc,2)+' مم/يوم'));
+  tr.push(stp('صافي الاحتياج','NIR=ETc−Pe','NIR='+fmt(ETc,2)+'−'+fmt(o.pe||0,2),'NIR='+fmt(NIR,2)+' مم/يوم'));
+  tr.push(stp('الاحتياج الكلي','GIR=NIR/η','GIR='+fmt(NIR,2)+'/'+fmt(o.eff,2),'GIR='+fmt(GIR,2)+' مم/يوم'));
+  tr.push(stp('الحجم اليومي','V=GIR×4.2×المساحة (1مم على الفدان=4.2م³)','V='+fmt(GIR,2)+'×4.2×'+fmt(o.area,0),'V='+fmt(v,0)+' م³/يوم'));
+  return{ETc:ETc,NIR:NIR,GIR:GIR,v:v,qls:qls,duty:duty,trace:tr}}
+
+ /* --- ٩) هبوط بئر Cooper–Jacob --- */
+ function wellCJ(o){var Q=o.Q,T=o.T,Sy=o.S,r=o.r,t=o.t,tr=[];
+  var u=r*r*Sy/(4*T*t);
+  var s=(2.303*Q/(4*Math.PI*T))*(Math.log(2.25*T*t/(r*r*Sy))/Math.LN10);
+  tr.push(stp('وسيط بوثايس','u=r²S/(4Tt)','u='+fmt(r,1)+'²×'+o.S+'/(4×'+fmt(T,0)+'×'+fmt(t,2)+')','u='+u.toExponential(2)));
+  tr.push(stp('تقريب Cooper–Jacob','s=(2.303Q/4πT)·log(2.25Tt/r²S)','s=(2.303×'+fmt(Q,0)+'/(4π×'+fmt(T,0)+'))×log('+fmt(2.25*T*t/(r*r*Sy),1)+')','s='+fmt(s,3)+' م'));
+  var ok=u<0.05;
+  tr.push(stp('صلاحية التقريب','يشترط u<0.05','u='+u.toExponential(2),ok?'التقريب صالح':'u كبيرة — استخدم Theis الكاملة'));
+  return{s:s,u:u,ok:ok,trace:tr}}
+
+ /* --- ١٠) تصنيف ملوحة مياه الري (USDA) --- */
+ function salin(ec){var tds=ec*640;var cls,cx,tx;
+  if(ec<0.25){cls='C1';cx='ok';tx='ملوحة منخفضة — صالحة لمعظم المحاصيل والأراضي'}
+  else if(ec<0.75){cls='C2';cx='ok';tx='ملوحة متوسطة — صالحة مع غسيل معتدل'}
+  else if(ec<2.25){cls='C3';cx='warn';tx='ملوحة عالية — تحتاج صرفًا جيدًا ومحاصيل متحملة'}
+  else{cls='C4';cx='bad';tx='ملوحة عالية جدًا — غير مناسبة للري في الظروف العادية'}
+  return{tds:tds,cls:cls,cx:cx,tx:tx,
+   trace:[stp('الأملاح الكلية التقديرية','TDS≈640×EC','TDS=640×'+fmt(ec,2),'TDS≈'+fmt(tds,0)+' مجم/لتر'),
+    stp('التصنيف','حدود USDA: 0.25 / 0.75 / 2.25 dS/m','EC='+fmt(ec,2)+' dS/m',cls+' — '+tx)]}}
+
+ /* --- ١١) التطهيرات --- */
+ function dredge(o){var Vv=o.L*o.W*o.d;var cost=Vv*o.rate;var days=o.prod>0?Math.ceil(Vv/o.prod):NaN;
+  return{V:Vv,cost:cost,days:days,
+   trace:[stp('حجم الناتج','V=الطول×متوسط العرض×سمك الإطماء','V='+fmt(o.L,0)+'×'+fmt(o.W,2)+'×'+fmt(o.d,2),'V='+fmt(Vv,0)+' م³'),
+    stp('التكلفة التقديرية','ت=V×فئة السعر','ت='+fmt(Vv,0)+'×'+fmt(o.rate,1),fmt(cost,0)+' جنيه'),
+    stp('المدة','أيام=V÷الإنتاجية اليومية','أيام='+fmt(Vv,0)+'/'+fmt(o.prod,0),fmt(days,0)+' يوم عمل')]}}
+
+ /* --- ١٢) كفاية نهاية ترعة --- */
+ function adequacy(qd,qr){var p=qr>0?qd/qr*100:NaN;var gr,cx;
+  if(p>=90){gr='كفاية جيدة — النهاية تصلها حصتها';cx='ok'}
+  else if(p>=75){gr='قصور محدود — يلزم ضبط المناوبة والتطهير الموضعي';cx='warn'}
+  else{gr='قصور حاد — نهاية متعطشة، تدخل عاجل';cx='bad'}
+  return{p:p,gr:gr,cx:cx,trace:[stp('مؤشر الكفاية','I=الوارد/المقرر×100','I='+fmt(qd,3)+'/'+fmt(qr,3)+'×100','I='+fmt(p,1)+'%')]}}
+
+ /* --- ١٣) مؤشر حالة منشأ (١–٤) --- */
+ function condition(scores,weights){var sw=0,ss=0,i;
+  for(i=0;i<scores.length;i++){sw+=weights[i];ss+=scores[i]*weights[i]}
+  var ci=ss/sw;var cls,cx,act;
+  if(ci<1.5){cls='جيدة';cx='ok';act='صيانة دورية اعتيادية'}
+  else if(ci<2.5){cls='تحت الملاحظة';cx='warn';act='متابعة نصف سنوية ومعالجات موضعية'}
+  else if(ci<3.3){cls='تحتاج تأهيل';cx='warn';act='إدراج بخطة التأهيل وتقييد التشغيل عند الذروة'}
+  else{cls='حرجة';cx='bad';act='تدخل عاجل وقيود تشغيل فورية'}
+  return{ci:ci,cls:cls,cx:cx,act:act,
+   trace:[stp('المؤشر المرجّح','CI=Σ(wᵢ×sᵢ)/Σwᵢ','مجموع الأوزان='+fmt(sw,2),'CI='+fmt(ci,2)+' من 4')]}}
+
+ return{sec:sec,qman:qman,yN:yN,yC:yC,frd:frd,
+  flowFromDepth:flowFromDepth,depthsFromQ:depthsFromQ,gvf:gvf,
+  gateFlow:gateFlow,gateSolveA:gateSolveA,weir:weir,ratingFit:ratingFit,
+  rotation:rotation,demandFao:demandFao,wellCJ:wellCJ,salin:salin,
+  dredge:dredge,adequacy:adequacy,condition:condition,g:g}
+})();
+/* =====================================================================
+   مكوّنات الواجهة + الأدوات التفاعلية (الدفعة الأولى)
+   ===================================================================== */
+var ACT={},TOOLS={},CUR={h:'#/p/home'};
+
+function pill(t,c){return '<span class="pill '+c+'">'+esc(t)+'</span>'}
+function rb(l,v,u,cls){return '<div class="rbox '+(cls||'')+'"><span>'+esc(l)+'</span><b>'+v+(u?' <u>'+esc(u)+'</u>':'')+'</b></div>'}
+function verdict(cls,txt){return '<div class="verdict '+cls+'">'+txt+'</div>'}
+function traceHTML(steps){if(!steps||!steps.length)return '';var b='',i,s;
+ for(i=0;i<steps.length;i++){s=steps[i];
+  b+='<div class="tr-s"><div class="k">'+esc(s.k)+'</div>'+(s.f?'<div class="f">'+esc(s.f)+'</div>':'')+
+     ((s.s&&s.s!=='—')?'<div class="s">'+esc(s.s)+'</div>':'')+'<div class="r">'+esc(s.r)+'</div></div>'}
+ return '<details class="trace"><summary>⌬ خطوات الحساب — أثر تفصيلي قابل للمراجعة</summary><div class="tr-steps">'+b+'</div></details>'}
+function fld(id,l,val,o){o=o||{};var inner;
+ if(o.type==='select')inner='<select id="'+id+'">'+opt(o.opts,val)+'</select>';
+ else if(o.type==='textarea')inner='<textarea id="'+id+'" placeholder="'+esc(o.ph||'')+'">'+esc(val==null?'':val)+'</textarea>';
+ else inner='<input id="'+id+'" type="'+(o.type||'number')+'" value="'+esc(val==null?'':val)+'"'+
+      ((o.type&&o.type!=='number')?'':' step="any"')+(o.ph?' placeholder="'+esc(o.ph)+'"':'')+(o.list?' list="'+o.list+'"':'')+'>';
+ return '<label class="'+(o.full?'full':'')+'"><span>'+esc(l)+(o.u?' <em>'+esc(o.u)+'</em>':'')+'</span>'+inner+'</label>'}
+function tabsHTML(app,list,act){var b='<div class="tabs">',i;
+ for(i=0;i<list.length;i++)b+='<button data-act="ui.tab" data-app="'+app+'" data-tab="'+list[i][0]+'" class="'+(list[i][0]===act?'on':'')+'">'+esc(list[i][1])+'</button>';
+ return b+'</div>'}
+ACT['ui.tab']=function(el){var app=el.getAttribute('data-app'),tb=el.getAttribute('data-tab');
+ (TOOLS._tab=TOOLS._tab||{})[app]=tb;
+ var g=el.parentNode.querySelectorAll('button'),i;for(i=0;i<g.length;i++)g[i].classList.remove('on');el.classList.add('on');
+ var box=$(app+'_tabs');if(!box)return;var cs=box.querySelectorAll('.tabc');
+ for(i=0;i<cs.length;i++)cs[i].classList.toggle('on',cs[i].id===app+'_tc_'+tb)};
+
+/* ---------- رسم بياني SVG ---------- */
+function lineChart(o){var w=o.w||580,h=o.h||230,pl=48,pr=14,pt=14,pb=26,i;
+ var xs=[],ys=[];o.series.forEach(function(s){s.pts.forEach(function(p){xs.push(p.x);ys.push(p.y)})});
+ (o.hl||[]).forEach(function(l){ys.push(l.y)});
+ if(!xs.length)return '<div class="empty"><b>لا توجد بيانات للرسم</b>أضف قراءات أولًا.</div>';
+ var x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs);
+ var y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);
+ if(x1-x0<1e-9)x1=x0+1;var yr=y1-y0;if(yr<1e-9){y0-=1;y1+=1}else{y0-=yr*0.09;y1+=yr*0.09}
+ function X(x){return pl+(x-x0)/(x1-x0)*(w-pl-pr)}
+ function Y(y){return pt+(1-(y-y0)/(y1-y0))*(h-pt-pb)}
+ var s='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto;direction:ltr" xmlns="http://www.w3.org/2000/svg">';
+ for(i=0;i<=4;i++){var gy=y0+(y1-y0)*i/4;
+  s+='<line x1="'+pl+'" x2="'+(w-pr)+'" y1="'+Y(gy).toFixed(1)+'" y2="'+Y(gy).toFixed(1)+'" stroke="var(--line)"/>';
+  s+='<text x="'+(pl-6)+'" y="'+(Y(gy)+3).toFixed(1)+'" font-size="8.5" fill="var(--mut2)" text-anchor="end">'+fmt(gy,(y1-y0)>25?0:2)+'</text>'}
+ (o.hl||[]).forEach(function(l){s+='<line x1="'+pl+'" x2="'+(w-pr)+'" y1="'+Y(l.y).toFixed(1)+'" y2="'+Y(l.y).toFixed(1)+'" stroke="'+l.c+'" stroke-width="1.3" stroke-dasharray="5 4"/>'+
+  '<text x="'+(w-pr)+'" y="'+(Y(l.y)-4).toFixed(1)+'" font-size="8.5" fill="'+l.c+'" text-anchor="end" class="artx">'+esc(l.l)+'</text>'});
+ o.series.forEach(function(sr){var d='';sr.pts.forEach(function(p,idx){d+=(idx?'L':'M')+X(p.x).toFixed(1)+' '+Y(p.y).toFixed(1)+' '});
+  if(sr.pts.length>1)s+='<path d="'+d+'" fill="none" stroke="'+sr.c+'" stroke-width="2.1" stroke-linejoin="round" opacity="0.95"/>';
+  if(sr.dots)sr.pts.forEach(function(p){s+='<circle cx="'+X(p.x).toFixed(1)+'" cy="'+Y(p.y).toFixed(1)+'" r="2.7" fill="'+sr.c+'"/>'})});
+ var xl=o.xlabs||[[x0,fmt(x0,0)],[(x0+x1)/2,fmt((x0+x1)/2,0)],[x1,fmt(x1,0)]];
+ xl.forEach(function(p){s+='<text x="'+X(p[0]).toFixed(1)+'" y="'+(h-8)+'" font-size="8.5" fill="var(--mut2)" text-anchor="middle">'+esc(String(p[1]))+'</text>'});
+ return s+'</svg>'}
+function spark(vals,w,h,c){if(!vals||vals.length<2)return '';
+ var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);if(mx-mn<1e-9)mx=mn+1;
+ var d='';vals.forEach(function(v,i){var x=1+i/(vals.length-1)*(w-2),y=h-2-(v-mn)/(mx-mn)*(h-4);d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)+' '});
+ return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="direction:ltr"><path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="1.6"/></svg>'}
+function legend(items){return '<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:9.5px;color:var(--mut);margin:2px 2px 8px">'+
+ items.map(function(x){return '<span><i style="display:inline-block;width:16px;height:3px;border-radius:2px;background:'+x[1]+';vertical-align:middle;margin-left:5px"></i>'+esc(x[0])+'</span>'}).join('')+'</div>'}
+function linfit(xs,ys){var n=xs.length,sx=0,sy=0,sxx=0,sxy=0,i;
+ for(i=0;i<n;i++){sx+=xs[i];sy+=ys[i];sxx+=xs[i]*xs[i];sxy+=xs[i]*ys[i]}
+ var den=n*sxx-sx*sx;if(Math.abs(den)<1e-12)return null;
+ return{b:(n*sxy-sx*sy)/den,a:(sy-((n*sxy-sx*sy)/den)*sx)/n}}
+
+/* ---------- مقطع عرضي للترعة ---------- */
+function xsecSVG(b,m,y){if(!(b>0)||!(y>0)||m<0)return '';
+ var W=b+2*m*y,sc=Math.min(232/Math.max(W,0.5),120/y);
+ var bw=b*sc,my=m*y*sc,H=y*sc,w2=W*sc;
+ var X0=(300-w2)/2,top=26,bed=top+H;
+ var fb=14; /* بدل حر مرسوم */
+ var p=[[X0-my*0.0,top],[X0+my,bed],[X0+my+bw,bed],[X0+w2,top]];
+ function pt(a){return a[0].toFixed(1)+','+a[1].toFixed(1)}
+ var s='<svg viewBox="0 0 300 '+(bed+34)+'" style="width:100%;max-width:340px;direction:ltr">';
+ s+='<polyline points="'+[[p[0][0]-14,top-fb],[p[0][0],top-fb],p[0],p[1],p[2],p[3],[p[3][0],top-fb],[p[3][0]+14,top-fb]].map(pt).join(' ')+'" fill="none" stroke="var(--gold)" stroke-width="2"/>';
+ s+='<polygon points="'+[p[0],p[1],p[2],p[3]].map(pt).join(' ')+'" fill="var(--aqua)" opacity="0.14"/>';
+ s+='<line x1="'+p[0][0]+'" y1="'+top+'" x2="'+p[3][0]+'" y2="'+top+'" stroke="var(--aqua)" stroke-width="1.6" stroke-dasharray="6 4"/>';
+ s+='<text x="150" y="'+(bed+16)+'" font-size="9" fill="var(--mut)" text-anchor="middle">b = '+fmt(b,2)+' m</text>';
+ s+='<line x1="'+(p[3][0]+8)+'" y1="'+top+'" x2="'+(p[3][0]+8)+'" y2="'+bed+'" stroke="var(--mut2)" stroke-width="1"/>';
+ s+='<text x="'+(p[3][0]+12)+'" y="'+((top+bed)/2+3)+'" font-size="9" fill="var(--aqua)">y='+fmt(y,2)+'</text>';
+ s+='<text x="'+(p[0][0]+my/2-4)+'" y="'+((top+bed)/2)+'" font-size="8.5" fill="var(--mut)" text-anchor="end">1:'+fmt(m,1)+'</text>';
+ return s+'</svg>'}
+
+/* ---------- مصنع سجلات CRUD ---------- */
+function crud(cfg){
+ function form(){var b='<div class="frm">';cfg.fields.forEach(function(f){b+=fld(cfg.key+'_'+f.id,f.l,f.def,f)});
+  b+='</div><div class="btnrow"><button class="btn p" data-act="'+cfg.key+'.add">＋ إضافة سجل</button>'+
+     '<button class="btn g sm" data-act="'+cfg.key+'.csv">⇩ تصدير CSV</button></div>';return b}
+ function table(){var rows=ST[cfg.store];
+  if(!rows.length)return '<div class="empty"><b>'+esc(cfg.empty||'لا سجلات بعد')+'</b>أضف أول سجل من النموذج.</div>';
+  var b='<div class="tblwrap"><table class="dt"><thead><tr>';
+  cfg.cols.forEach(function(c){b+='<th>'+esc(c.h)+'</th>'});b+='<th></th></tr></thead><tbody>';
+  for(var i=rows.length-1;i>=0;i--){var r=rows[i];b+='<tr>';
+   cfg.cols.forEach(function(c){b+='<td class="'+(c.cls||'')+'">'+c.f(r)+'</td>'});
+   b+='<td><button class="xdel" title="حذف" data-act="'+cfg.key+'.del" data-id="'+r.id+'">✕</button></td></tr>'}
+  return b+'</tbody></table></div>'}
+ ACT[cfg.key+'.add']=function(){var row=cfg.mk();if(!row)return;row.id=uid();
+  ST[cfg.store].push(row);Store.save();rerender();toast('أُضيف السجل','ok')};
+ ACT[cfg.key+'.del']=function(el){var id=el.getAttribute('data-id'),rows=ST[cfg.store],i;
+  for(i=0;i<rows.length;i++)if(rows[i].id===id){rows.splice(i,1);break}
+  Store.save();rerender();toast('حُذف السجل')};
+ ACT[cfg.key+'.csv']=function(){var rows=[cfg.csvHead].concat(ST[cfg.store].map(cfg.csv));
+  dl(cfg.csvName,csvOf(rows),'text/csv');toast('تم تصدير CSV','ok')};
+ return{form:form,table:table}}
+function need(v,msg){if(!isFinite(v)){toast(msg||'أكمل الحقول الرقمية أولًا','bad');return false}return true}
+function appShell(k,inner){var a=REG.apps[k],sec=REG.sectorOf(k);
+ return '<section class="sectorhero"><span class="eyebrow">'+esc(sec?sec.nm:'مركز القيادة')+' · '+(a.tool?'تطبيق تفاعلي — يعمل محليًا':'بطاقة نطاق')+'</span>'+
+ '<h1><span style="color:var(--aqua)">'+a.ic+'</span> '+esc(a.nm)+'</h1><p>'+esc(a.ds)+'</p>'+lkRow(k)+'</section>'+inner}
+
+/* ============ ١) المعمل الهيدروليكي ============ */
+TOOLS.hydlab={
+ render:function(){
+  var f1='<div class="frm">'+fld('hl_b','عرض القاع b',8,{u:'م'})+fld('hl_m','ميل الجوانب m',1.5,{u:'أفقي:1رأسي'})+
+   fld('hl_n','معامل مانينج n',0.025,{u:'—'})+fld('hl_S','ميل القاع S',0.00012,{u:'م/م'})+
+   fld('hl_y','عمق المياه y',2.1,{u:'م'})+fld('hl_Q','التصرف Q',12,{u:'م³/ث'})+'</div>'+
+   '<div class="btnrow"><button class="btn p" data-act="hyd.fwd">التصرف من العمق ⇦</button>'+
+   '<button class="btn gold" data-act="hyd.inv">الأعماق من التصرف ⇦</button></div>'+
+   '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">قيم n استرشادية: ترعة ترابية بحالة جيدة 0.022–0.028 · مبطنة خرسانة 0.014–0.017 · بحشائش مؤثرة 0.033–0.040</p>';
+  var t1='<div class="tgrid"><div class="panel"><h3>مدخلات القطاع شبه المنحرف</h3>'+f1+'</div>'+
+   '<div class="panel"><h3>النتائج</h3><div id="hl_xs" style="text-align:center"></div><div id="hl_out"><div class="empty"><b>جاهز للحساب</b>أدخل القطاع ثم اختر اتجاه الحل.</div></div></div></div>';
+  var f2='<div class="frm">'+fld('hg_y0','العمق عند المنشأ y₀',3.1,{u:'م'})+fld('hg_dx','خطوة التكامل Δx',50,{u:'م'})+
+   fld('hg_L','أقصى مدى للحساب',25,{u:'كم'})+'<div></div></div>'+
+   '<div class="btnrow"><button class="btn p" data-act="hyd.gvf">ارسم منحنى السطح ⇦</button></div>'+
+   '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">يستخدم قطاع التبويب الأول (b, m, n, S, Q). ضع y₀ = عمق المياه أمام القنطرة/الهدار (المؤخر عند المنشأ)، والتكامل يتم عكس الاتجاه.</p>';
+  var t2='<div class="tgrid"><div class="panel"><h3>مياه راجعة — GVF بطريقة RK4</h3>'+f2+'</div>'+
+   '<div class="panel"><h3>منحنى سطح المياه</h3><div id="hg_out"><div class="empty"><b>لم يُحسب بعد</b>حدّد y₀ ثم ارسم.</div></div></div></div>';
+  var cv=function(id,la,ua,lb,ub){return '<div class="panel" style="margin-bottom:10px"><div class="frm">'+
+   fld('cv_'+id+'_a',la,'',{u:ua})+fld('cv_'+id+'_b',lb,'',{u:ub})+'</div></div>'};
+  var t3='<div style="max-width:640px">'+
+   cv('q1','تصرف','م³/ث','معدل يومي','مليون م³/يوم')+
+   cv('a1','مساحة','فدان','مساحة','م²')+
+   cv('c1','مساحة','قيراط','مساحة','م²')+
+   cv('d1','مقنن','م³/فدان/يوم','معدل نوعي','لتر/ث/فدان')+
+   cv('e1','توصيل كهربي EC','dS/m','أملاح ذائبة TDS','مجم/لتر')+
+   '<p style="font-size:9.5px;color:var(--mut2)">اكتب في أي خانة ويُحسب المقابل فورًا · فدان = 4,200 م² · قيراط = 175 م² · TDS ≈ 640×EC</p></div>';
+  return appShell('hydlab',tabsHTML('hydlab',[['sec','القطاع والأعماق'],['gvf','المياه الراجعة'],['conv','محوّل الوحدات']],'sec')+
+   '<div id="hydlab_tabs"><div class="tabc on" id="hydlab_tc_sec">'+t1+'</div><div class="tabc" id="hydlab_tc_gvf">'+t2+'</div><div class="tabc" id="hydlab_tc_conv">'+t3+'</div></div>')},
+ wire:function(){var b=V('hl_b'),m=V('hl_m'),y=V('hl_y');$('hl_xs').innerHTML=xsecSVG(b,m,y)}};
+ACT['hyd.fwd']=function(){var b=V('hl_b'),m=V('hl_m'),n=V('hl_n'),S=V('hl_S'),y=V('hl_y');
+ if(!need(b+m+n+S+y))return;
+ var r=ENG.flowFromDepth({b:b,m:m,n:n,S:S,y:y});
+ $('hl_xs').innerHTML=xsecSVG(b,m,y);
+ $('hl_out').innerHTML='<div class="res">'+rb('التصرف Q',fmt(r.Q,3),'م³/ث')+rb('السرعة V',fmt(r.V,3),'م/ث')+
+  rb('رقم فرود',fmt(r.Fr,3),'',r.Fr<1?'ok':'warn')+rb('نصف القطر R',fmt(r.R,3),'م','gold')+'</div>'+
+  verdict(r.Fr<1?'ok':'warn','نظام السريان: '+r.reg)+verdict(r.vCls,r.vTxt)+traceHTML(r.trace)};
+ACT['hyd.inv']=function(){var b=V('hl_b'),m=V('hl_m'),n=V('hl_n'),S=V('hl_S'),Q=V('hl_Q');
+ if(!need(b+m+n+S+Q))return;
+ var r=ENG.depthsFromQ({b:b,m:m,n:n,S:S,Q:Q});
+ $('hl_xs').innerHTML=xsecSVG(b,m,r.yn);
+ $('hl_out').innerHTML='<div class="res">'+rb('العمق الطبيعي yₙ',fmt(r.yn,3),'م')+rb('العمق الحرج y꜀',fmt(r.yc,3),'م','','')+
+  rb('السرعة عند yₙ',fmt(r.Vn,3),'م/ث')+rb('فرود عند yₙ',fmt(r.Frn,3),'',r.Frn<1?'ok':'warn')+'</div>'+
+  verdict('info','تصنيف الميل: '+r.slope)+traceHTML(r.trace)};
+ACT['hyd.gvf']=function(){var b=V('hl_b'),m=V('hl_m'),n=V('hl_n'),S=V('hl_S'),Q=V('hl_Q');
+ var y0=V('hg_y0'),dx=V('hg_dx'),L=V('hg_L')*1000;
+ if(!need(b+m+n+S+Q+y0+dx+L))return;
+ var r=ENG.gvf({b:b,m:m,n:n,S:S,Q:Q,y0:y0,dx:dx,L:L});
+ var km=r.pts.map(function(p){return{x:p.x/1000,y:p.y}});
+ var stopTx={asymptote:'وصل المنحنى للعمق الطبيعي (تقارب)',critical:'اقترب من العمق الحرج — توقف آمن',length:'انتهى مدى الحساب المحدد',divergence:'تباعد عددي — راجع المدخلات'};
+ $('hg_out').innerHTML=legend([['منحنى السطح','var(--aqua)'],['العمق الطبيعي yₙ','var(--gold)'],['العمق الحرج y꜀','var(--bad)']])+
+  lineChart({series:[{c:'var(--aqua)',pts:km}],hl:[{y:r.yn,c:'var(--gold)',l:'yn'},{y:r.yc,c:'var(--bad)',l:'yc'}],
+   xlabs:[[0,'0 (المنشأ)'],[km[km.length-1].x/2,fmt(km[km.length-1].x/2,1)],[km[km.length-1].x,fmt(km[km.length-1].x,1)+' كم']]})+
+  '<div class="res" style="margin-top:10px">'+rb('نوع المنحنى',r.prof.split(' ')[0],'','gold')+
+  rb('yₙ / y꜀',fmt(r.yn,2)+' / '+fmt(r.yc,2),'م')+
+  rb('المدى المؤثر L₉₉',r.L1===null?'—':fmt(r.L1/1000,2),'كم')+
+  rb('نهاية الحساب',fmt(r.dist/1000,2),'كم')+'</div>'+
+  verdict('info',r.prof+' · '+stopTx[r.stop])+traceHTML(r.trace)};
+
+/* ============ ٢) البوابات والهدارات ============ */
+TOOLS.gates={
+ render:function(){
+  var f1='<div class="frm">'+fld('gt_B','عرض الفتحة B',3,{u:'م'})+fld('gt_N','عدد الفتحات العاملة',4,{u:'—'})+
+   fld('gt_a','ارتفاع فتح البوابة a',0.6,{u:'م'})+fld('gt_H1','عمق أمام (فوق العتبة) H₁',2.4,{u:'م'})+
+   fld('gt_H2','عمق خلف H₂',1.1,{u:'م'})+fld('gt_mode','نمط السريان','auto',{type:'select',opts:[['auto','تحديد تلقائي'],['free','حر'],['sub','مغمور']]})+
+   fld('gt_Cd','معامل حر C_d',0.58,{u:'—'})+fld('gt_Cs','معامل مغمور C_s',0.80,{u:'—'})+'</div>'+
+   '<div class="btnrow"><button class="btn p" data-act="gt.run">احسب التصرف ⇦</button></div>';
+  var f2='<div class="frm">'+fld('wr_type','نوع الهدار','broad',{type:'select',opts:[['broad','عريض القمة (قناطر)'],['sharp','حاد الحافة']]})+
+   fld('wr_B','طول الهدار B',12,{u:'م'})+fld('wr_H1','ارتفاع المياه فوق العتبة H₁',0.85,{u:'م'})+
+   fld('wr_H2','ارتفاع المؤخر فوق العتبة H₂',0.35,{u:'م (0=حر)'})+fld('wr_Cd','معامل تصحيح C',1.0,{u:'—'})+'</div>'+
+   '<div class="btnrow"><button class="btn p" data-act="wr.run">احسب التصرف ⇦</button></div>';
+  var f3='<div class="frm">'+fld('gi_Qt','التصرف المستهدف',35,{u:'م³/ث'})+'<div></div></div>'+
+   '<div class="btnrow"><button class="btn gold" data-act="gt.inv">أوجد فتحة البوابة المطلوبة ⇦</button></div>'+
+   '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">يعتمد على مدخلات تبويب الفتحات (B ، N ، H₁ ، H₂ والمعاملات).</p>';
+  return appShell('gates',tabsHTML('gates',[['g','فتحات البوابات'],['w','الهدارات'],['i','فتحة لتصرف مستهدف']],'g')+
+   '<div id="gates_tabs"><div class="tabc on" id="gates_tc_g"><div class="tgrid"><div class="panel"><h3>مدخلات التشغيل</h3>'+f1+'</div><div class="panel"><h3>النتائج</h3><div id="gt_out"><div class="empty"><b>جاهز</b>أدخل مناسيب التشغيل.</div></div></div></div></div>'+
+   '<div class="tabc" id="gates_tc_w"><div class="tgrid"><div class="panel"><h3>مدخلات الهدار</h3>'+f2+'</div><div class="panel"><h3>النتائج</h3><div id="wr_out"><div class="empty"><b>جاهز</b>أدخل أبعاد الهدار.</div></div></div></div></div>'+
+   '<div class="tabc" id="gates_tc_i"><div class="tgrid"><div class="panel"><h3>الحل العكسي</h3>'+f3+'</div><div class="panel"><h3>النتائج</h3><div id="gi_out"><div class="empty"><b>جاهز</b>حدّد التصرف المطلوب تمريره.</div></div></div></div></div></div>')}};
+ACT['gt.run']=function(){var o={B:V('gt_B'),N:V('gt_N'),a:V('gt_a'),H1:V('gt_H1'),H2:V('gt_H2'),mode:VS('gt_mode'),Cd:V('gt_Cd'),Cs:V('gt_Cs')};
+ if(!need(o.B+o.N+o.a+o.H1+o.H2))return;
+ var r=ENG.gateFlow(o);
+ $('gt_out').innerHTML='<div class="res">'+rb('التصرف الكلي Q',fmt(r.Q,2),'م³/ث')+rb('تصرف الفتحة',fmt(r.q1,2),'م³/ث')+
+  rb('يعادل',fmt(r.Q*0.0864,3),'مليون م³/يوم','gold')+rb('سرعة النفث',fmt(r.vj,2),'م/ث',r.vj>3.5?'warn':'')+'</div>'+
+  verdict(r.mode==='free'?'info':'warn','النمط: '+(r.mode==='free'?'سريان حر تحت البوابة':'سريان مغمور — التصرف يتأثر بمنسوب المؤخر'))+
+  (r.vj>3.5?verdict('warn','سرعة نفث مرتفعة — تأكد من كفاءة حوض التهدئة ومداميك الحماية خلف المنشأ'):'')+traceHTML(r.trace)};
+ACT['gt.inv']=function(){var o={B:V('gt_B'),N:V('gt_N'),H1:V('gt_H1'),H2:V('gt_H2'),mode:VS('gt_mode'),Cd:V('gt_Cd'),Cs:V('gt_Cs'),Qt:V('gi_Qt')};
+ if(!need(o.B+o.N+o.H1+o.H2+o.Qt))return;
+ var r=ENG.gateSolveA(o);
+ $('gi_out').innerHTML=(isFinite(r.a)?'<div class="res">'+rb('فتحة البوابة المطلوبة a',fmt(r.a,3),'م','gold')+
+  rb('بالسنتيمتر',fmt(r.a*100,1),'سم')+rb('تحقق Q',fmt(r.Q,2),'م³/ث')+rb('النمط',r.mode==='free'?'حر':'مغمور','')+'</div>':
+  verdict('bad','التصرف المستهدف غير قابل للتمرير بالمناسيب الحالية — راجع عدد الفتحات أو فرق المناسيب'))+traceHTML(r.trace)};
+ACT['wr.run']=function(){var o={type:VS('wr_type'),B:V('wr_B'),H1:V('wr_H1'),H2:V('wr_H2'),Cd:V('wr_Cd')};
+ if(!need(o.B+o.H1))return;
+ var r=ENG.weir(o);
+ $('wr_out').innerHTML='<div class="res">'+rb('التصرف Q',fmt(r.Q,2),'م³/ث')+rb('معامل الغمر f',fmt(r.f,3),'')+
+  rb('يعادل',fmt(r.Q*0.0864,3),'مليون م³/يوم','gold')+'</div>'+
+  (r.sub?verdict('warn','الهدار يعمل مغمورًا — طُبّق تصحيح Villemonte'):verdict('ok','الهدار يعمل حرًا (المؤخر لا يؤثر)'))+traceHTML(r.trace)};
+
+/* ============ ٣) المناسيب والتصرفات ============ */
+var readingsCrud=crud({key:'rd',store:'readings',csvName:'readings.csv',
+ empty:'لا قراءات مسجلة',
+ csvHead:['المحطة','التاريخ','منسوب أمام','منسوب خلف','التصرف م3/ث'],
+ csv:function(r){return[r.st,r.dt,r.fr,r.bk,r.q]},
+ fields:[{id:'st',l:'المحطة',def:'',type:'text',list:'stlist',full:1,ph:'أمام قناطر …'},
+  {id:'dt',l:'التاريخ',def:'',type:'date'},{id:'q',l:'التصرف',u:'م³/ث'},
+  {id:'fr',l:'منسوب أمام',u:'م'},{id:'bk',l:'منسوب خلف',u:'م'}],
+ cols:[{h:'المحطة',f:function(r){return esc(r.st)+(r.demo?' '+pill('عرض','mut'):'')}},
+  {h:'التاريخ',cls:'n',f:function(r){return esc(r.dt)}},
+  {h:'أمام',cls:'n',f:function(r){return fmt(r.fr,2)}},{h:'خلف',cls:'n',f:function(r){return fmt(r.bk,2)}},
+  {h:'التصرف',cls:'n',f:function(r){return fmt(r.q,0)}}],
+ mk:function(){var st=VS('rd_st'),dt=VS('rd_dt')||todayS(),q=V('rd_q'),fr=V('rd_fr'),bk=V('rd_bk');
+  if(!st){toast('اكتب اسم المحطة','bad');return null}
+  if(!isFinite(q)&&!isFinite(fr)){toast('أدخل التصرف أو المنسوب على الأقل','bad');return null}
+  return{st:st,dt:dt,q:isFinite(q)?q:null,fr:isFinite(fr)?fr:null,bk:isFinite(bk)?bk:null}}});
+function stations(){var s={};ST.readings.forEach(function(r){s[r.st]=1});
+ ST.twin.nodes.forEach(function(n){if(n.ds!=null)s['أمام '+n.nm.split(' — ')[0]]=1});return Object.keys(s)}
+TOOLS.readings={
+ render:function(){
+  var dlist='<datalist id="stlist">'+stations().map(function(s){return '<option value="'+esc(s)+'">'}).join('')+'</datalist>';
+  var t1='<div class="tgrid"><div class="panel"><h3>تسجيل قراءة</h3>'+readingsCrud.form()+'</div>'+
+   '<div class="panel"><h3>سجل القراءات <span class="badge demo" style="margin-right:6px">'+ST.readings.length+' قراءة</span></h3>'+readingsCrud.table()+'</div></div>';
+  var f2='<div class="frm">'+fld('rc_g','منسوب G',3.2,{u:'م'})+fld('rc_q','تصرف مُقاس Q',9.5,{u:'م³/ث'})+
+   fld('rc_g0','منسوب الصفر G₀','auto',{type:'text',ph:'auto أو قيمة'})+'<div style="display:flex;align-items:end"><button class="btn g" style="width:100%" data-act="rc.addpt">＋ نقطة معايرة</button></div></div>'+
+   '<div class="btnrow"><button class="btn p" data-act="rc.fit">ملاءمة المنحنى ⇦</button><button class="btn d sm" data-act="rc.clr">مسح النقاط</button></div>'+
+   '<div id="rc_pts" style="margin-top:10px"></div>';
+  var t2='<div class="tgrid"><div class="panel"><h3>نقاط المعايرة الميدانية</h3>'+f2+'</div>'+
+   '<div class="panel"><h3>منحنى القياس Q = C·(G−G₀)ⁿ</h3><div id="rc_out"><div class="empty"><b>٣ نقاط على الأقل</b>أدخل أزواج (منسوب، تصرف) من القياسات الميدانية.</div></div></div></div>';
+  var stl=stations();
+  var t3='<div class="panel"><div class="frm" style="grid-template-columns:1fr auto"><label><span>المحطة</span><select id="an_st">'+
+   opt(stl.map(function(s){return[s,s]}),stl[0]||'')+'</select></label>'+
+   '<div style="display:flex;align-items:end"><button class="btn p" data-act="an.run">تحليل ⇦</button></div></div>'+
+   '<div id="an_out" style="margin-top:12px"></div></div>';
+  return appShell('readings',dlist+tabsHTML('readings',[['log','سجل القراءات'],['rc','معايرة Q–H'],['an','تحليل زمني']],'log')+
+   '<div id="readings_tabs"><div class="tabc on" id="readings_tc_log">'+t1+'</div><div class="tabc" id="readings_tc_rc">'+t2+'</div><div class="tabc" id="readings_tc_an">'+t3+'</div></div>')},
+ wire:function(){renderRcPts()}};
+function renderRcPts(){var P=ST.rating.pts;var el=$('rc_pts');if(!el)return;
+ if(!P.length){el.innerHTML='<div style="font-size:10px;color:var(--mut2)">لا نقاط بعد.</div>';return}
+ el.innerHTML='<div class="tblwrap" style="max-height:180px"><table class="dt"><thead><tr><th>#</th><th>G م</th><th>Q م³/ث</th><th></th></tr></thead><tbody>'+
+  P.map(function(p,i){return '<tr><td class="n">'+(i+1)+'</td><td class="n">'+fmt(p.g,2)+'</td><td class="n">'+fmt(p.q,2)+'</td><td><button class="xdel" data-act="rc.delpt" data-i="'+i+'">✕</button></td></tr>'}).join('')+
+  '</tbody></table></div>'}
+ACT['rc.addpt']=function(){var g=V('rc_g'),q=V('rc_q');if(!need(g+q))return;
+ ST.rating.pts.push({g:g,q:q});Store.save();renderRcPts()};
+ACT['rc.delpt']=function(el){ST.rating.pts.splice(+el.getAttribute('data-i'),1);Store.save();renderRcPts()};
+ACT['rc.clr']=function(){ST.rating.pts=[];Store.save();renderRcPts();$('rc_out').innerHTML='<div class="empty"><b>مُسحت النقاط</b></div>'};
+ACT['rc.fit']=function(){var g0=VS('rc_g0');var r=ENG.ratingFit(ST.rating.pts,g0==='auto'||g0===''?'auto':parseFloat(g0));
+ if(r.err){$('rc_out').innerHTML=verdict('bad',r.err);return}
+ var P=ST.rating.pts,gmin=Math.min.apply(null,P.map(function(p){return p.g})),gmax=Math.max.apply(null,P.map(function(p){return p.g}));
+ var cur=[];for(var i=0;i<=40;i++){var g=gmin+(gmax-gmin)*i/40;cur.push({x:g,y:r.f(g)})}
+ $('rc_out').innerHTML=legend([['نقاط ميدانية','var(--gold)'],['المنحنى الملاءم','var(--aqua)']])+
+  lineChart({series:[{c:'var(--aqua)',pts:cur},{c:'var(--gold)',pts:P.map(function(p){return{x:p.g,y:p.q}}),dots:1}],
+   xlabs:[[gmin,fmt(gmin,2)],[(gmin+gmax)/2,'المنسوب G (م)'],[gmax,fmt(gmax,2)]]})+
+  '<div class="res" style="margin-top:10px">'+rb('C',fmt(r.C,4),'')+rb('الأس n',fmt(r.n,3),'','gold')+
+  rb('G₀',fmt(r.g0,3),'م')+rb('R²',fmt(r.R2,4),'',r.R2>0.98?'ok':'warn')+'</div>'+
+  '<div class="frm" style="margin-top:10px;grid-template-columns:1fr auto 1fr">'+fld('rc_pg','تنبؤ عند منسوب',fmt((gmin+gmax)/2,2),{u:'م'})+
+  '<div style="display:flex;align-items:end"><button class="btn g" data-act="rc.pred">Q ⇦</button></div><div id="rc_pv" style="display:flex;align-items:end;font-family:var(--mono);color:var(--aqua);font-size:15px;direction:ltr"></div></div>'+
+  (r.R2<0.98?verdict('warn','R² أقل من 0.98 — راجع النقاط الشاذة أو جرّب G₀ يدويًا'):verdict('ok','ملاءمة جيدة — يمكن اعتماد المنحنى لهذه المحطة ضمن مدى المعايرة'))+traceHTML(r.trace);
+ TOOLS._rcfit=r};
+ACT['rc.pred']=function(){var r=TOOLS._rcfit;if(!r)return;var g=V('rc_pg');if(!need(g))return;
+ $('rc_pv').textContent='Q = '+fmt(r.f(g),3)+' m³/s'};
+ACT['an.run']=function(){var st=VS('an_st');var rows=ST.readings.filter(function(r){return r.st===st}).sort(function(a,b){return a.dt<b.dt?-1:1});
+ if(rows.length<2){$('an_out').innerHTML='<div class="empty"><b>بيانات غير كافية</b>سجل قراءتين على الأقل لهذه المحطة.</div>';return}
+ var qp=[],fp=[],bp=[],i;for(i=0;i<rows.length;i++){if(isFinite(rows[i].q))qp.push({x:i,y:rows[i].q});
+  if(isFinite(rows[i].fr))fp.push({x:i,y:rows[i].fr});if(isFinite(rows[i].bk))bp.push({x:i,y:rows[i].bk})}
+ var qs=qp.map(function(p){return p.y});
+ var xl=[[0,rows[0].dt.slice(5)],[rows.length-1,rows[rows.length-1].dt.slice(5)]];
+ $('an_out').innerHTML='<div class="head" style="margin:2px 0 8px"><div><span>التصرفات</span><h2 style="font-size:14px">'+esc(st)+'</h2></div></div>'+
+  lineChart({h:200,series:[{c:'var(--aqua)',pts:qp,dots:1}],xlabs:xl})+
+  '<div class="res" style="margin:10px 0">'+rb('آخر قراءة',fmt(qs[qs.length-1],0),'م³/ث','gold')+
+  rb('المتوسط',fmt(qs.reduce(function(a,b){return a+b},0)/qs.length,0),'م³/ث')+
+  rb('الأدنى',fmt(Math.min.apply(null,qs),0),'م³/ث')+rb('الأقصى',fmt(Math.max.apply(null,qs),0),'م³/ث')+'</div>'+
+  (fp.length>1?('<div class="head" style="margin:14px 0 8px"><div><span>المناسيب</span><h2 style="font-size:14px">أمام / خلف</h2></div></div>'+
+   legend([['أمام','var(--gold)'],['خلف','var(--mut)']])+
+   lineChart({h:180,series:[{c:'var(--gold)',pts:fp,dots:1},{c:'var(--mut)',pts:bp}],xlabs:xl})):'')};
+
+/* ============ ٤) المناوبات ============ */
+var CROPS=[['65','أرز (65)'],['45','قصب السكر (45)'],['30','قطن (30)'],['28','ذرة صيفي (28)'],['25','برسيم (25)'],['22','خضر (22)'],['20','بنجر (20)'],['18','قمح (18)']];
+TOOLS.rotation={
+ render:function(){
+  var f='<div class="frm">'+fld('ro_Z','الزمام المخدوم',5000,{u:'فدان'})+
+   fld('ro_crop','مقنن استرشادي','30',{type:'select',opts:CROPS})+
+   fld('ro_duty','المقنن المعتمد',30,{u:'م³/فدان/يوم'})+fld('ro_on','أيام العمالة',4,{u:'يوم'})+
+   fld('ro_off','أيام البطالة',8,{u:'يوم'})+fld('ro_av','التصرف المتاح فعليًا',4.6,{u:'م³/ث (اختياري)'})+'</div>'+
+   '<div class="btnrow"><button class="btn p" data-act="ro.run">احسب المناوبة ⇦</button></div>'+
+   '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">المقننات المعروضة استرشادية للذروة الصيفية — اعتمد مقننات الإدارة المركزية لتوزيع المياه لكل موسم.</p>';
+  return appShell('rotation','<div class="tgrid"><div class="panel"><h3>بيانات الترعة والمناوبة</h3>'+f+'</div>'+
+   '<div class="panel"><h3>النتائج</h3><div id="ro_out"><div class="empty"><b>جاهز</b>أدخل الزمام والمقنن ونظام المناوبة.</div></div></div></div>')}};
+ACT['ro.run']=function(){var Z=V('ro_Z'),duty=V('ro_duty'),on=V('ro_on'),off=V('ro_off'),av=V('ro_av');
+ if(!need(Z+duty+on+off))return;if(on<=0){toast('أيام العمالة يجب أن تكون أكبر من صفر','bad');return}
+ var r=ENG.rotation({Z:Z,duty:duty,on:on,off:off});
+ var h='<div class="res">'+rb('احتياج يومي',fmt(r.Qd/1000,1),'ألف م³/يوم')+rb('تصرف مستمر مكافئ',fmt(r.Qc,3),'م³/ث')+
+  rb('تصرف فترة العمالة',fmt(r.Qr,3),'م³/ث','gold')+rb('معدل نوعي',fmt(r.qls,3),'ل/ث/فدان')+'</div>'+
+  verdict('info','دورة المناوبة '+r.cyc+' يوم ('+on+' عمالة / '+off+' بطالة) — يلزم تمرير '+fmt(r.Qr,2)+' م³/ث طوال فترة العمالة لتغطية الاحتياج');
+ if(isFinite(av)&&av>0){var ad=ENG.adequacy(av,r.Qr);
+  h+=verdict(ad.cx,'مقارنة بالمتاح ('+fmt(av,2)+' م³/ث): نسبة التغطية '+fmt(ad.p,1)+'% — '+ad.gr);
+  r.trace=r.trace.concat(ad.trace)}
+ $('ro_out').innerHTML=h+traceHTML(r.trace)};
+ACT['ro.crop']=function(){};
+
+/* ============ ٥) الاحتياجات المائية ============ */
+TOOLS.demand={
+ render:function(){
+  var f1='<div class="frm">'+fld('dm_area','المساحة',1000,{u:'فدان'})+fld('dm_crop','مقنن استرشادي','28',{type:'select',opts:CROPS})+
+   fld('dm_duty','المقنن',28,{u:'م³/فدان/يوم'})+fld('dm_days','طول الموسم',150,{u:'يوم'})+'</div>'+
+   '<div class="btnrow"><button class="btn p" data-act="dm.run1">احسب ⇦</button></div>';
+  var f2='<div class="frm">'+fld('fa_et0','البخرنتح المرجعي ETo',6.2,{u:'مم/يوم'})+fld('fa_kc','معامل المحصول Kc',1.05,{u:'—'})+
+   fld('fa_pe','مطر فعّال Pe',0,{u:'مم/يوم'})+fld('fa_eff','كفاءة التوصيل والحقل η',0.7,{u:'0–1'})+
+   fld('fa_area','المساحة',1000,{u:'فدان'})+'<div></div></div>'+
+   '<div class="btnrow"><button class="btn p" data-act="dm.run2">احسب ⇦</button></div>'+
+   '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">منهجية FAO-56 · 1 مم على فدان = 4.2 م³ · Kc استرشادي منتصف الموسم: أرز 1.2 · ذرة 1.15 · قمح 1.1 · قطن 1.1 · خضر 1.0</p>';
+  return appShell('demand',tabsHTML('demand',[['d','بالمقنن المباشر'],['f','FAO-56 (ETo×Kc)']],'d')+
+   '<div id="demand_tabs"><div class="tabc on" id="demand_tc_d"><div class="tgrid"><div class="panel"><h3>مدخلات</h3>'+f1+'</div><div class="panel"><h3>النتائج</h3><div id="dm_out1"><div class="empty"><b>جاهز</b></div></div></div></div></div>'+
+   '<div class="tabc" id="demand_tc_f"><div class="tgrid"><div class="panel"><h3>مدخلات</h3>'+f2+'</div><div class="panel"><h3>النتائج</h3><div id="dm_out2"><div class="empty"><b>جاهز</b></div></div></div></div></div></div>')}};
+ACT['dm.run1']=function(){var A=V('dm_area'),d=V('dm_duty'),days=V('dm_days');if(!need(A+d+days))return;
+ var vd=A*d,q=vd/86.4/1000,season=vd*days/1e6;
+ var tr=[stp('الحجم اليومي','V=مساحة×مقنن','V='+fmt(A,0)+'×'+fmt(d,1),'V='+fmt(vd,0)+' م³/يوم'),
+  stp('التصرف المستمر','Q=V/86400','—','Q='+fmt(vd/86400,3)+' م³/ث'),
+  stp('احتياج الموسم','V_s=V×الأيام/10⁶','V_s='+fmt(vd,0)+'×'+days,'V_s='+fmt(season,2)+' مليون م³')];
+ $('dm_out1').innerHTML='<div class="res">'+rb('يومي',fmt(vd/1000,1),'ألف م³/يوم')+rb('تصرف مستمر',fmt(vd/86400,3),'م³/ث','gold')+
+  rb('نوعي',fmt(d/86.4,3),'ل/ث/فدان')+rb('موسمي',fmt(season,2),'مليون م³')+'</div>'+traceHTML(tr)};
+ACT['dm.run2']=function(){var o={et0:V('fa_et0'),kc:V('fa_kc'),pe:V('fa_pe'),eff:V('fa_eff'),area:V('fa_area')};
+ if(!need(o.et0+o.kc+o.eff+o.area))return;if(o.eff<=0||o.eff>1){toast('الكفاءة بين 0 و 1','bad');return}
+ var r=ENG.demandFao(o);
+ $('dm_out2').innerHTML='<div class="res">'+rb('ETc',fmt(r.ETc,2),'مم/يوم')+rb('إجمالي GIR',fmt(r.GIR,2),'مم/يوم')+
+  rb('مقنن مكافئ',fmt(r.duty,1),'م³/فدان/يوم','gold')+rb('حجم يومي',fmt(r.v/1000,1),'ألف م³/يوم')+
+  rb('تصرف مستمر',fmt(r.v/86400,3),'م³/ث')+rb('نوعي',fmt(r.qls/o.area,3),'ل/ث/فدان')+'</div>'+traceHTML(r.trace)};
+/* =====================================================================
+   الأدوات — الدفعة الثانية: سجلات، آبار، جودة، فحص، أزمات، توأم رقمي
+   ===================================================================== */
+function stPill(v){var m={'حرجة':'bad','متوسطة':'warn','مستقرة':'ok','جيدة':'ok','تحت الملاحظة':'warn','تحتاج تأهيل':'warn','جديدة':'info','جار الفحص':'warn','منتهية':'ok','قائمة':'bad','جار الإزالة':'warn','أزيلت':'ok'};
+ return pill(v,m[v]||'mut')}
+
+/* ---- الترع المتعبة ---- */
+var tiredCrud=crud({key:'ti',store:'canals',csvName:'tired_canals.csv',empty:'لا ترع مسجلة',
+ csvHead:['الترعة','الإدارة','الطول كم','الحالة','ملاحظات'],
+ csv:function(r){return[r.nm,r.adm,r.ln,r.st,r.note]},
+ fields:[{id:'nm',l:'اسم الترعة',type:'text',full:1,ph:'ترعة …'},{id:'adm',l:'الإدارة العامة',type:'text',ph:'عام …'},
+  {id:'ln',l:'الطول',u:'كم'},{id:'st',l:'الحالة',type:'select',def:'متوسطة',opts:[['حرجة','حرجة'],['متوسطة','متوسطة'],['مستقرة','مستقرة']]},
+  {id:'note',l:'ملاحظات فنية',type:'text',full:1,ph:'اختناق / انهيار جوانب / إطماء…'}],
+ cols:[{h:'الترعة',f:function(r){return '<b>'+esc(r.nm)+'</b>'+(r.demo?' '+pill('عرض','mut'):'')+'<br><small style="color:var(--mut)">'+esc(r.note||'')+'</small>'}},
+  {h:'الإدارة',f:function(r){return esc(r.adm||'—')}},{h:'كم',cls:'n',f:function(r){return fmt(r.ln,1)}},
+  {h:'الحالة',f:function(r){return stPill(r.st)}}],
+ mk:function(){var nm=VS('ti_nm');if(!nm){toast('اكتب اسم الترعة','bad');return null}
+  return{nm:nm,adm:VS('ti_adm'),ln:V('ti_ln'),st:VS('ti_st'),note:VS('ti_note')}}});
+TOOLS.tired={render:function(){
+ var c=ST.canals,k={h:c.filter(function(x){return x.st==='حرجة'}).length,m:c.filter(function(x){return x.st==='متوسطة'}).length,s:c.filter(function(x){return x.st==='مستقرة'}).length};
+ var tl=c.reduce(function(a,x){return a+(isFinite(x.ln)?x.ln:0)},0);
+ return appShell('tired','<div class="kpis" style="grid-template-columns:repeat(4,1fr)">'+
+  '<div class="kpi"><span>حرجة</span><b style="color:var(--bad)">'+k.h+'</b><small class="b">تدخل عاجل</small></div>'+
+  '<div class="kpi"><span>متوسطة</span><b style="color:var(--warn)">'+k.m+'</b><small class="w">ضمن الخطة</small></div>'+
+  '<div class="kpi"><span>مستقرة</span><b style="color:var(--ok)">'+k.s+'</b><small>متابعة دورية</small></div>'+
+  '<div class="kpi"><span>إجمالي الأطوال</span><b>'+fmt(tl,1)+'</b><small>كم</small></div></div>'+
+  '<div class="tgrid"><div class="panel"><h3>إضافة ترعة للسجل</h3>'+tiredCrud.form()+'</div>'+
+  '<div class="panel"><h3>السجل</h3>'+tiredCrud.table()+'</div></div>')}};
+
+/* ---- سجل المنشآت ---- */
+var structCrud=crud({key:'sx',store:'structures',csvName:'structures.csv',empty:'لا منشآت مسجلة',
+ csvHead:['المنشأ','النوع','الإدارة','سنة الإنشاء','الحالة'],
+ csv:function(r){return[r.nm,r.ty,r.adm,r.yr,r.st]},
+ fields:[{id:'nm',l:'اسم المنشأ',type:'text',full:1,ph:'قناطر / هدار / سحارة …'},
+  {id:'ty',l:'النوع',type:'select',def:'قناطر',opts:[['قناطر','قناطر'],['هدار','هدار'],['سحارة','سحارة'],['بوابة','بوابة'],['محطة رفع','محطة رفع'],['كوبري تحكم','كوبري تحكم']]},
+  {id:'adm',l:'الإدارة',type:'text'},{id:'yr',l:'سنة الإنشاء'},
+  {id:'st',l:'الحالة',type:'select',def:'جيدة',opts:[['جيدة','جيدة'],['تحت الملاحظة','تحت الملاحظة'],['تحتاج تأهيل','تحتاج تأهيل'],['حرجة','حرجة']]}],
+ cols:[{h:'المنشأ',f:function(r){return '<b>'+esc(r.nm)+'</b>'+(r.demo?' '+pill('عرض','mut'):'')}},
+  {h:'النوع',f:function(r){return esc(r.ty)}},{h:'الإدارة',f:function(r){return esc(r.adm||'—')}},
+  {h:'الإنشاء',cls:'n',f:function(r){return r.yr?String(r.yr):'—'}},{h:'الحالة',f:function(r){return stPill(r.st)}}],
+ mk:function(){var nm=VS('sx_nm');if(!nm){toast('اكتب اسم المنشأ','bad');return null}
+  return{nm:nm,ty:VS('sx_ty'),adm:VS('sx_adm'),yr:V('sx_yr')||null,st:VS('sx_st')}}});
+TOOLS.structures={render:function(){
+ var ages=ST.structures.filter(function(s){return isFinite(s.yr)&&s.yr>1800}).map(function(s){return new Date().getFullYear()-s.yr});
+ var avg=ages.length?ages.reduce(function(a,b){return a+b},0)/ages.length:NaN;
+ return appShell('structures','<div class="tgrid"><div class="panel"><h3>إضافة منشأ</h3>'+structCrud.form()+
+  (isFinite(avg)?'<div class="verdict info" style="margin-top:12px">متوسط عمر المنشآت المسجلة ≈ '+fmt(avg,0)+' سنة — اربط النتائج بتطبيق الفحص الإنشائي لترتيب أولويات التأهيل</div>':'')+'</div>'+
+  '<div class="panel"><h3>السجل الفني</h3>'+structCrud.table()+'</div></div>')}};
+
+/* ---- الفحص الإنشائي ---- */
+var INSP=[['body','الجسم الخرساني والأساسات',0.30],['gate','البوابات وأجهزة الرفع',0.25],['scour','التسريب والنحر خلف المنشأ',0.20],['deck','الكباري والمشايات',0.15],['elec','المعدات الكهربية والتحكم',0.10]];
+TOOLS.inspect={render:function(){
+ var sopts=[['','— بدون ربط بسجل —']].concat(ST.structures.map(function(s){return[s.id,s.nm]}));
+ var f='<div class="frm">'+fld('in_sx','المنشأ','',{type:'select',opts:sopts,full:1})+
+  INSP.map(function(c){return fld('in_'+c[0],c[1]+' (وزن '+Math.round(c[2]*100)+'%)','1',{type:'select',opts:[['1','1 — جيد'],['2','2 — ملاحظات بسيطة'],['3','3 — تدهور مؤثر'],['4','4 — خطر / عاجل']]})}).join('')+'</div>'+
+  '<div class="btnrow"><button class="btn p" data-act="in.run">احسب مؤشر الحالة ⇦</button></div>';
+ return appShell('inspect','<div class="tgrid"><div class="panel"><h3>تقييم العناصر (١ = جيد … ٤ = خطر)</h3>'+f+'</div>'+
+  '<div class="panel"><h3>نتيجة الفحص</h3><div id="in_out"><div class="empty"><b>جاهز</b>قيّم عناصر المنشأ الخمسة.</div></div></div></div>')}};
+ACT['in.run']=function(){var sc=INSP.map(function(c){return V('in_'+c[0])}),w=INSP.map(function(c){return c[2]});
+ var r=ENG.condition(sc,w);var sid=VS('in_sx');
+ var h='<div class="res">'+rb('مؤشر الحالة CI',fmt(r.ci,2),'من 4',r.cx)+rb('التصنيف',r.cls,'','gold')+'</div>'+
+  verdict(r.cx,'الإجراء المقترح: '+r.act)+traceHTML(r.trace);
+ if(sid)h+='<div class="btnrow"><button class="btn gold" data-act="in.apply" data-id="'+sid+'" data-st="'+esc(r.cls)+'">اعتماد الحالة على سجل المنشأ ⇦</button></div>';
+ $('in_out').innerHTML=h};
+ACT['in.apply']=function(el){var id=el.getAttribute('data-id'),stv=el.getAttribute('data-st');
+ ST.structures.forEach(function(s){if(s.id===id){s.st=stv;s.demo=false}});Store.save();toast('حُدّثت حالة المنشأ في السجل','ok')};
+
+/* ---- الآبار ---- */
+var wellCrud=crud({key:'wl',store:'wells',csvName:'wells.csv',empty:'لا آبار مسجلة',
+ csvHead:['الكود','الموقع','العمق م','مستوى استاتيكي م','التصرف م3/س','EC dS/m'],
+ csv:function(r){return[r.cd,r.gov,r.dp,r.swl,r.q,r.ec]},
+ fields:[{id:'cd',l:'كود البئر',type:'text',ph:'GW-…'},{id:'gov',l:'الموقع / المركز',type:'text'},
+  {id:'dp',l:'العمق الكلي',u:'م'},{id:'swl',l:'عمق مستوى الماء',u:'م'},{id:'q',l:'تصرف التشغيل',u:'م³/س'},{id:'ec',l:'EC',u:'dS/m'}],
+ cols:[{h:'الكود',f:function(r){return '<b class="num">'+esc(r.cd)+'</b>'+(r.demo?' '+pill('عرض','mut'):'')}},
+  {h:'الموقع',f:function(r){return esc(r.gov||'—')}},{h:'العمق',cls:'n',f:function(r){return fmt(r.dp,0)}},
+  {h:'م.الماء',cls:'n',f:function(r){return fmt(r.swl,1)}},{h:'م³/س',cls:'n',f:function(r){return fmt(r.q,0)}},
+  {h:'EC',cls:'n',f:function(r){return fmt(r.ec,2)}}],
+ mk:function(){var cd=VS('wl_cd');if(!cd){toast('اكتب كود البئر','bad');return null}
+  return{cd:cd,gov:VS('wl_gov'),dp:V('wl_dp'),swl:V('wl_swl'),q:V('wl_q'),ec:V('wl_ec')}}});
+var wlogCrud=crud({key:'wg',store:'wlog',csvName:'well_levels.csv',empty:'لا قياسات',
+ csvHead:['البئر','التاريخ','عمق مستوى الماء م'],csv:function(r){return[r.wl,r.dt,r.lvl]},
+ fields:[{id:'wl',l:'البئر',type:'select',opts:[],full:1},{id:'dt',l:'التاريخ',type:'date'},{id:'lvl',l:'عمق مستوى الماء',u:'م'}],
+ cols:[{h:'البئر',f:function(r){return '<b class="num">'+esc(r.wl)+'</b>'}},{h:'التاريخ',cls:'n',f:function(r){return esc(r.dt)}},
+  {h:'العمق م',cls:'n',f:function(r){return fmt(r.lvl,2)}}],
+ mk:function(){var w=VS('wg_wl'),lvl=V('wg_lvl');if(!w||!need(lvl,'أدخل عمق المستوى'))return null;
+  return{wl:w,dt:VS('wg_dt')||todayS(),lvl:lvl}}});
+TOOLS.wells={render:function(){
+ var wopts=ST.wells.map(function(w){return[w.cd,w.cd+' — '+(w.gov||'')]});
+ wlogCrud._wopts=wopts;
+ var t1='<div class="tgrid"><div class="panel"><h3>تسجيل بئر</h3>'+wellCrud.form()+'</div><div class="panel"><h3>قاعدة الآبار</h3>'+wellCrud.table()+'</div></div>';
+ var t2='<div class="tgrid"><div class="panel"><h3>قياس دوري</h3>'+wlogCrud.form().replace('<select id="wg_wl"></select>','<select id="wg_wl">'+opt(wopts,wopts.length?wopts[0][0]:'')+'</select>')+
+  '<div class="btnrow" style="margin-top:4px"><button class="btn g sm" data-act="wg.trend">اتجاه الهبوط للبئر المحدد ⇦</button></div></div>'+
+  '<div class="panel"><h3>سجل القياسات</h3>'+wlogCrud.table()+'<div id="wg_out" style="margin-top:12px"></div></div></div>';
+ var f3='<div class="frm">'+fld('cj_Q','تصرف الضخ',1200,{u:'م³/يوم'})+fld('cj_T','معامل النقل T',500,{u:'م²/يوم'})+
+  fld('cj_S','معامل التخزين S',0.001,{u:'—'})+fld('cj_r','المسافة من البئر r',50,{u:'م'})+
+  fld('cj_t','زمن الضخ t',10,{u:'يوم'})+'<div></div></div>'+
+  '<div class="btnrow"><button class="btn p" data-act="cj.run">احسب الهبوط ⇦</button></div>';
+ var t3='<div class="tgrid"><div class="panel"><h3>هبوط التشغيل — Cooper–Jacob</h3>'+f3+'</div>'+
+  '<div class="panel"><h3>النتائج</h3><div id="cj_out"><div class="empty"><b>جاهز</b>لتقدير الهبوط عند بئر مجاور أو نقطة مراقبة.</div></div></div></div>';
+ return appShell('wells',tabsHTML('wells',[['r','سجل الآبار'],['m','قياسات المناسيب'],['c','هبوط التشغيل']],'r')+
+  '<div id="wells_tabs"><div class="tabc on" id="wells_tc_r">'+t1+'</div><div class="tabc" id="wells_tc_m">'+t2+'</div><div class="tabc" id="wells_tc_c">'+t3+'</div></div>')}};
+ACT['wg.trend']=function(){var w=VS('wg_wl');
+ var rows=ST.wlog.filter(function(r){return r.wl===w}).sort(function(a,b){return a.dt<b.dt?-1:1});
+ if(rows.length<3){$('wg_out').innerHTML=verdict('warn','٣ قياسات على الأقل لرسم الاتجاه لهذا البئر');return}
+ var t0=new Date(rows[0].dt).getTime();
+ var xs=rows.map(function(r){return (new Date(r.dt).getTime()-t0)/864e5}),ys=rows.map(function(r){return r.lvl});
+ var lf=linfit(xs,ys);var rate=lf?lf.b*365:NaN;
+ var cx=rate>1?'bad':(rate>0.4?'warn':'ok');
+ $('wg_out').innerHTML=legend([['عمق مستوى الماء','var(--aqua)'],['خط الاتجاه','var(--gold)']])+
+  lineChart({h:190,series:[{c:'var(--aqua)',pts:xs.map(function(x,i){return{x:x,y:ys[i]}}),dots:1},
+   {c:'var(--gold)',pts:[{x:xs[0],y:lf.a+lf.b*xs[0]},{x:xs[xs.length-1],y:lf.a+lf.b*xs[xs.length-1]}]}],
+   xlabs:[[xs[0],rows[0].dt.slice(2)],[xs[xs.length-1],rows[rows.length-1].dt.slice(2)]]})+
+  '<div class="res" style="margin-top:10px">'+rb('معدل التغير',fmt(rate,2),'م/سنة',cx)+rb('عدد القياسات',String(rows.length),'')+'</div>'+
+  verdict(cx,rate>0?'اتجاه هبوط في مستوى الماء الجوفي بمعدل '+fmt(rate,2)+' م/سنة'+(rate>1?' — استنزاف مقلق، راجع تراخيص السحب بالمنطقة':(rate>0.4?' — يستدعي المتابعة اللصيقة':' — ضمن الحدود المعتادة')):'المستوى مستقر أو في تحسّن')};
+ACT['cj.run']=function(){var o={Q:V('cj_Q'),T:V('cj_T'),S:V('cj_S'),r:V('cj_r'),t:V('cj_t')};
+ if(!need(o.Q+o.T+o.S+o.r+o.t))return;
+ var r=ENG.wellCJ(o);
+ $('cj_out').innerHTML='<div class="res">'+rb('الهبوط المتوقع s',fmt(r.s,3),'م','gold')+rb('وسيط u',r.u.toExponential(2),'',r.ok?'ok':'warn')+'</div>'+
+  verdict(r.ok?'ok':'warn',r.ok?'التقريب صالح (u<0.05) — يمكن الاعتماد على النتيجة':'u خارج مدى صلاحية التقريب — استخدم منحنيات Theis الكاملة')+traceHTML(r.trace)};
+
+/* ---- نوعية المياه ---- */
+TOOLS.quality={render:function(){
+ return appShell('quality','<div class="tgrid"><div class="panel"><h3>عينة المياه</h3><div class="frm">'+
+  fld('qa_ec','التوصيل الكهربي EC',1.1,{u:'dS/m'})+'<div></div></div>'+
+  '<div class="btnrow"><button class="btn p" data-act="qa.run">صنّف العينة ⇦</button></div>'+
+  '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">تصنيف USDA لمياه الري حسب خطورة الملوحة C1–C4 · للتقييم الكامل يُضاف SAR ونسبة الصوديوم من التحليل المعملي.</p></div>'+
+  '<div class="panel"><h3>النتيجة والإرشادات</h3><div id="qa_out"><div class="empty"><b>جاهز</b>أدخل قراءة جهاز EC.</div></div></div></div>')}};
+ACT['qa.run']=function(){var ec=V('qa_ec');if(!need(ec))return;
+ var r=ENG.salin(ec);
+ var tips={C1:['صالحة لجميع المحاصيل تقريبًا دون احتياطات خاصة','مناسبة للتربة ضعيفة الصرف'],
+  C2:['غسيل معتدل مع ري منتظم يكفي','تجنب تراكم الأملاح في الأراضي سيئة الصرف'],
+  C3:['يلزم صرف مغطى/مكشوف فعّال','اختر محاصيل متحملة (شعير، بنجر، قطن) وتجنب الحساسة (فول، موالح)','أضف احتياج غسيل ≈ 10–15% فوق المقنن'],
+  C4:['غير صالحة للري المعتاد','لا تستخدم إلا بخلط بمياه أقل ملوحة وبنظام صرف ممتاز ومحاصيل شديدة التحمل']};
+ $('qa_out').innerHTML='<div class="res">'+rb('التصنيف',r.cls,'',r.cx)+rb('TDS تقديري',fmt(r.tds,0),'مجم/لتر','gold')+'</div>'+
+  verdict(r.cx,r.tx)+'<ul style="font-size:11.5px;color:var(--mut);line-height:2;padding-right:18px;margin:10px 0 0">'+
+  tips[r.cls].map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>'+traceHTML(r.trace)};
+
+/* ---- التطهيرات ---- */
+TOOLS.dredge={render:function(){
+ var rows=ST.dredges;var tot=rows.reduce(function(a,r){return a+r.V},0),tc=rows.reduce(function(a,r){return a+r.cost},0);
+ var tbl=rows.length?'<div class="tblwrap"><table class="dt"><thead><tr><th>الترعة</th><th>م³</th><th>جنيه</th><th>أيام</th><th></th></tr></thead><tbody>'+
+  rows.map(function(r){return '<tr><td>'+esc(r.nm)+'</td><td class="n">'+fmt(r.V,0)+'</td><td class="n">'+fmt(r.cost,0)+'</td><td class="n">'+fmt(r.days,0)+'</td><td><button class="xdel" data-act="dg.del" data-id="'+r.id+'">✕</button></td></tr>'}).join('')+
+  '<tr><td><b>الإجمالي ('+rows.length+')</b></td><td class="n"><b>'+fmt(tot,0)+'</b></td><td class="n"><b>'+fmt(tc,0)+'</b></td><td></td><td></td></tr></tbody></table></div>'+
+  '<div class="btnrow"><button class="btn g sm" data-act="dg.csv">⇩ CSV</button></div>':'<div class="empty"><b>قائمة الأعمال فارغة</b>احسب ثم أضِف للقائمة.</div>';
+ var f='<div class="frm">'+fld('dg_nm','الترعة / الحوض','',{type:'text',full:1,ph:'ترعة …'})+
+  fld('dg_L','طول قطاع التطهير',3000,{u:'م'})+fld('dg_W','متوسط عرض القاع المؤثر',6,{u:'م'})+
+  fld('dg_d','متوسط سمك الإطماء',0.45,{u:'م'})+fld('dg_rate','فئة السعر',28,{u:'جنيه/م³'})+
+  fld('dg_prod','إنتاجية الحفار',650,{u:'م³/يوم'})+'<div></div></div>'+
+  '<div class="btnrow"><button class="btn p" data-act="dg.run">احسب ⇦</button><button class="btn gold" data-act="dg.add">＋ إضافة للقائمة</button></div>';
+ return appShell('dredge','<div class="tgrid"><div class="panel"><h3>حساب أعمال التطهير</h3>'+f+
+  '<div id="dg_out" style="margin-top:12px"></div></div><div class="panel"><h3>قائمة أعمال الموسم</h3>'+tbl+'</div></div>')}};
+function dgCalc(){var o={L:V('dg_L'),W:V('dg_W'),d:V('dg_d'),rate:V('dg_rate'),prod:V('dg_prod')};
+ if(!need(o.L+o.W+o.d+o.rate+o.prod))return null;return{o:o,r:ENG.dredge(o)}}
+ACT['dg.run']=function(){var c=dgCalc();if(!c)return;
+ $('dg_out').innerHTML='<div class="res">'+rb('حجم الناتج',fmt(c.r.V,0),'م³','gold')+rb('التكلفة',fmt(c.r.cost/1000,1),'ألف جنيه')+
+  rb('المدة',fmt(c.r.days,0),'يوم عمل')+'</div>'+traceHTML(c.r.trace)};
+ACT['dg.add']=function(){var c=dgCalc();if(!c)return;var nm=VS('dg_nm')||'قطاع بدون اسم';
+ ST.dredges.push({id:uid(),nm:nm,V:c.r.V,cost:c.r.cost,days:c.r.days});Store.save();rerender();toast('أُضيف للقائمة','ok')};
+ACT['dg.del']=function(el){var id=el.getAttribute('data-id');
+ ST.dredges=ST.dredges.filter(function(r){return r.id!==id});Store.save();rerender()};
+ACT['dg.csv']=function(){dl('dredging.csv',csvOf([['الترعة','م3','جنيه','أيام']].concat(ST.dredges.map(function(r){return[r.nm,r.V,r.cost,r.days]}))),'text/csv')};
+
+/* ---- نهايات الترع ---- */
+TOOLS.ends={render:function(){
+ var f='<div class="frm">'+fld('en_qr','التصرف المقرر للنهاية',1.2,{u:'م³/ث'})+fld('en_qd','التصرف الوارد فعليًا',0.95,{u:'م³/ث'})+'</div>'+
+  '<div class="btnrow"><button class="btn p" data-act="en.run">احسب مؤشر الكفاية ⇦</button></div>'+
+  '<p style="font-size:9.5px;color:var(--mut2);margin:9px 2px 0">المقرر من حاسبة المناوبات أو المقنن × زمام النهاية، والوارد من قياس ميداني أو منحنى معايرة نهاية الترعة.</p>';
+ return appShell('ends','<div class="tgrid"><div class="panel"><h3>قياس نهاية الترعة</h3>'+f+'</div>'+
+  '<div class="panel"><h3>النتيجة</h3><div id="en_out"><div class="empty"><b>جاهز</b>مؤشر عدالة وصول المياه.</div></div></div></div>')}};
+ACT['en.run']=function(){var qr=V('en_qr'),qd=V('en_qd');if(!need(qr+qd))return;
+ var r=ENG.adequacy(qd,qr);
+ $('en_out').innerHTML='<div class="res">'+rb('مؤشر الكفاية',fmt(r.p,1),'%',r.cx)+rb('العجز',fmt(Math.max(qr-qd,0),3),'م³/ث')+'</div>'+
+  verdict(r.cx,r.gr)+'<div class="btnrow"><button class="btn gold" data-act="en.adopt" data-p="'+r.p.toFixed(1)+'">اعتماده كمؤشر كفاية عام للمنصة ⇦</button></div>'+traceHTML(r.trace)};
+ACT['en.adopt']=function(el){ST.kpiAdequacy={v:parseFloat(el.getAttribute('data-p')),demo:false};Store.save();toast('اعتُمد مؤشر الكفاية العام','ok')};
+
+/* ---- الشكاوى والتعديات ---- */
+function refNext(pfx,key){ST.seq[key]=(ST.seq[key]||0)+1;return pfx+'-'+new Date().getFullYear()+'-'+pad(ST.seq[key])}
+var compCrud=crud({key:'cm',store:'complaints',csvName:'complaints.csv',empty:'لا شكاوى',
+ csvHead:['الرقم المرجعي','التاريخ','النوع','المحافظة','الوصف','الحالة'],
+ csv:function(r){return[r.ref,r.dt,r.tp,r.gov,r.dsc,r.st]},
+ fields:[{id:'tp',l:'نوع الشكوى',type:'select',def:'نقص مياه بنهاية ترعة',opts:[['نقص مياه بنهاية ترعة','نقص مياه بنهاية ترعة'],['تعدٍ على جسر','تعدٍ على جسر'],['كسر / انهيار جسر','كسر / انهيار جسر'],['تلوث مجرى','تلوث مجرى'],['مخالفة مأخذ','مخالفة مأخذ'],['أخرى','أخرى']]},
+  {id:'gov',l:'المحافظة / المركز',type:'text'},{id:'dsc',l:'وصف موجز',type:'text',full:1},
+  {id:'st',l:'الحالة',type:'select',def:'جديدة',opts:[['جديدة','جديدة'],['جار الفحص','جار الفحص'],['منتهية','منتهية']]}],
+ cols:[{h:'المرجع',cls:'n',f:function(r){return '<b>'+esc(r.ref)+'</b>'}},{h:'التاريخ',cls:'n',f:function(r){return esc(r.dt)}},
+  {h:'النوع',f:function(r){return esc(r.tp)}},{h:'الجهة',f:function(r){return esc(r.gov||'—')}},{h:'الحالة',f:function(r){return stPill(r.st)}}],
+ mk:function(){return{ref:refNext('ش','c'),dt:todayS(),tp:VS('cm_tp'),gov:VS('cm_gov'),dsc:VS('cm_dsc'),st:VS('cm_st')}}});
+TOOLS.complaints={render:function(){
+ var o=ST.complaints.filter(function(c){return c.st!=='منتهية'}).length;
+ return appShell('complaints','<div class="tgrid"><div class="panel"><h3>تسجيل شكوى — رقم مرجعي تلقائي</h3>'+compCrud.form()+
+  '<div class="verdict info" style="margin-top:12px">شكاوى مفتوحة الآن: <b class="num">'+o+'</b> — تُغذّي غرفة الأزمات تلقائيًا</div></div>'+
+  '<div class="panel"><h3>سجل الشكاوى</h3>'+compCrud.table()+'</div></div>')}};
+var violCrud=crud({key:'vl',store:'violations',csvName:'violations.csv',empty:'لا تعديات',
+ csvHead:['الرقم المرجعي','التاريخ','النوع','الموقع','الوصف','الموقف'],
+ csv:function(r){return[r.ref,r.dt,r.tp,r.gov,r.dsc,r.st]},
+ fields:[{id:'tp',l:'نوع التعدي',type:'select',def:'بناء داخل حرم النيل',opts:[['بناء داخل حرم النيل','بناء داخل حرم النيل'],['ردم جزئي','ردم جزئي'],['مرسى غير مرخص','مرسى غير مرخص'],['شغل حرم بمزروعات','شغل حرم بمزروعات'],['أخرى','أخرى']]},
+  {id:'gov',l:'الموقع (محافظة/مركز/كم)',type:'text'},{id:'dsc',l:'وصف موجز',type:'text',full:1},
+  {id:'st',l:'الموقف',type:'select',def:'قائمة',opts:[['قائمة','قائمة'],['جار الإزالة','جار الإزالة'],['أزيلت','أزيلت']]}],
+ cols:[{h:'المرجع',cls:'n',f:function(r){return '<b>'+esc(r.ref)+'</b>'}},{h:'التاريخ',cls:'n',f:function(r){return esc(r.dt)}},
+  {h:'النوع',f:function(r){return esc(r.tp)}},{h:'الموقع',f:function(r){return esc(r.gov||'—')}},{h:'الموقف',f:function(r){return stPill(r.st)}}],
+ mk:function(){return{ref:refNext('ت','v'),dt:todayS(),tp:VS('vl_tp'),gov:VS('vl_gov'),dsc:VS('vl_dsc'),st:VS('vl_st')}}});
+TOOLS.violations={render:function(){
+ return appShell('violations','<div class="tgrid"><div class="panel"><h3>تسجيل تعدٍّ — رقم مرجعي تلقائي</h3>'+violCrud.form()+'</div>'+
+  '<div class="panel"><h3>سجل التعديات</h3>'+violCrud.table()+'</div></div>')}};
+
+/* ---- بوابة التطبيقات الخارجية (المستوى ١) ---- */
+function linksFor(k){var L=(ST&&ST.links)?ST.links:[],o=[],i;
+ for(i=0;i<L.length;i++)if(L[i].attach===k&&L[i].url)o.push(L[i]);return o}
+function hostOf(u){try{return new URL(u).host}catch(e){return String(u).replace(/^https?:\/\//,'').split('/')[0]}}
+function lkRow(k){var L=linksFor(k);if(!L.length)return '';
+ return '<div class="btnrow" style="margin-top:13px">'+L.map(function(l){
+  return '<a class="btn gold sm" target="_blank" rel="noopener" href="'+esc(l.url)+'">↗ فتح '+esc(l.nm)+'</a>'}).join('')+'</div>'}
+var LKCATS=[['توأم رقمي','توأم رقمي'],['منظومة ميدانية','منظومة ميدانية'],['حاسبات','حاسبات'],['إدارية','إدارية']];
+function lkAttachOpts(){var o=[['','— غير مرتبط ببطاقة —'],['twin','التوأم الرقمي للنيل']];
+ REG.sectors.forEach(function(sc){sc.apps.forEach(function(k){o.push([k,REG.apps[k].nm])})});return o}
+TOOLS.linkhub={render:function(){
+ var ed=null,i;if(TOOLS._lkEdit)for(i=0;i<ST.links.length;i++)if(ST.links[i].id===TOOLS._lkEdit)ed=ST.links[i];
+ var f='<div class="frm">'+
+  fld('lk_nm','اسم التطبيق',ed?ed.nm:'',{type:'text',full:1,ph:'توأم ترعة …'})+
+  fld('lk_url','رابط التشغيل',ed?ed.url:'',{type:'text',full:1,ph:'https://mohseno2002.github.io/…'})+
+  fld('lk_cat','التصنيف',ed?ed.cat:'توأم رقمي',{type:'select',opts:LKCATS})+
+  fld('lk_attach','يظهر على بطاقة',ed?ed.attach:'',{type:'select',opts:lkAttachOpts()})+
+  fld('lk_ic','أيقونة (رمز)',ed?ed.ic:'⇱',{type:'text'})+
+  fld('lk_ds','وصف موجز',ed?ed.ds:'',{type:'text'})+
+  fld('lv_path','⚡ مسار الملخص الحي',(ed&&ed.live)?ed.live.path:'',{type:'text',full:1,ph:'irrigation-hub/exports/ismailia — أو رابط كامل — يدعم {today}'})+
+  fld('lv_fields','⚡ حقول العرض (التسمية | المسار.النقطي)',(ed&&ed.live&&ed.live.fields)?ed.live.fields.map(function(f){return f.l+' | '+f.p+(f.s?' | '+f.s:'')}).join('\n'):'',{type:'textarea',full:1,ph:'التصرف م³/ث | kpi.q — سطر لكل رقم، أو اتركه فارغًا لملخص تلقائي'})+'</div>'+
+  '<div id="lk_test" style="margin-top:8px"></div>'+
+  '<div class="btnrow"><button class="btn p" data-act="lk.add">'+(ed?'حفظ التعديل ⇦':'＋ إضافة تطبيق')+'</button>'+
+  (ed?'<button class="btn g" data-act="lk.cancel">إلغاء</button>':'')+'<button class="btn g" data-act="lk.test">⚡ اختبار الاتصال</button></div>'+
+  '<p style="font-size:9.5px;color:var(--mut2);margin:10px 2px 0">الروابط تُحفظ محليًا وتدخل ضمن النسخة الاحتياطية JSON — أدخل رابط كل تطبيق مرة واحدة فيظهر زر «فتح ↗» على بطاقته وصفحته وفي لوحة الأوامر.</p>';
+ var linked=ST.links.filter(function(l){return l.url}).length;
+ var cards=ST.links.map(function(l){
+  return '<div class="card" style="cursor:default">'+
+   '<div style="display:flex;justify-content:space-between;align-items:start"><div class="ico">'+esc(l.ic||'⇱')+'</div>'+
+   (l.url?pill('مرتبط','ok'):pill('بانتظار الرابط','warn'))+((l.live&&l.live.path)?' '+pill('حي ⚡','info'):'')+'</div>'+
+   '<h3>'+esc(l.nm)+'</h3><p>'+esc(l.ds||'')+' · <b style="color:var(--gold2)">'+esc(l.cat)+'</b></p>'+
+   '<div class="lkhost">'+(l.url?esc(hostOf(l.url)):'—')+'</div>'+
+   '<em>'+(l.url?'<a class="btn gold sm" target="_blank" rel="noopener" href="'+esc(l.url)+'">↗ فتح</a>':'<span style="font-size:9px;color:var(--mut2)">أضِف الرابط بالتعديل</span>')+
+   '<span><button class="btn g sm" data-act="lk.edit" data-id="'+l.id+'">تعديل</button> <button class="xdel" data-act="lk.del" data-id="'+l.id+'" title="حذف">✕</button></span></em></div>'}).join('');
+ return appShell('linkhub','<div class="kpis" style="grid-template-columns:repeat(3,1fr)">'+
+  '<div class="kpi"><span>تطبيقات مسجلة</span><b>'+ST.links.length+'</b><small>من منظومتك القائمة</small></div>'+
+  '<div class="kpi"><span>مرتبطة برابط فعّال</span><b style="color:var(--ok)">'+linked+'</b><small>جاهزة للفتح ↗</small></div>'+
+  '<div class="kpi"><span>بانتظار الرابط</span><b style="color:var(--warn)">'+(ST.links.length-linked)+'</b><small>أدخل الروابط مرة واحدة</small></div></div>'+
+  '<div class="panel" style="margin-bottom:12px"><h3>قاعدة المزامنة الحية — Firebase RTDB</h3>'+
+  '<div class="frm" style="grid-template-columns:1fr auto">'+
+  fld('lk_base','رابط قاعدة البيانات (للمسارات النسبية)',ST.liveBase,{type:'text',ph:'https://xxxx-default-rtdb.firebaseio.com'})+
+  '<div style="display:flex;align-items:end"><button class="btn gold" data-act="lk.base">حفظ</button></div></div>'+
+  '<p style="font-size:9.5px;color:var(--mut2);margin:8px 2px 0">قراءة عبر REST (المسار + .json) — اسمح بالقراءة العامة على مسارات exports فقط في قواعد الأمان.</p></div>'+
+  '<div class="tgrid"><div class="panel"><h3>'+(ed?'تعديل: '+esc(ed.nm):'تسجيل تطبيق خارجي')+'</h3>'+f+'</div>'+
+  '<div><div class="cards" style="grid-template-columns:1fr 1fr">'+cards+'</div></div></div>')}};
+ACT['lk.add']=function(){var nm=VS('lk_nm'),url=VS('lk_url');
+ if(!nm){toast('اكتب اسم التطبيق','bad');return}
+ if(url&&!/^https?:\/\//.test(url)){toast('الرابط يجب أن يبدأ بـ https://','bad');return}
+ var rec={nm:nm,url:url,cat:VS('lk_cat'),attach:VS('lk_attach'),ic:VS('lk_ic')||'⇱',ds:VS('lk_ds')},i;
+ var lp=VS('lv_path');if(lp)rec.live={path:lp,fields:parseFields(VS('lv_fields'))};
+ if(TOOLS._lkEdit){for(i=0;i<ST.links.length;i++)if(ST.links[i].id===TOOLS._lkEdit){rec.id=TOOLS._lkEdit;
+   var ol=ST.links[i];if(rec.live&&ol.live&&ol.live.cache&&ol.live.path===rec.live.path)rec.live.cache=ol.live.cache;
+   ST.links[i]=rec}
+  TOOLS._lkEdit=null;toast('حُفظ التعديل','ok')}
+ else{rec.id=uid();ST.links.push(rec);toast('سُجّل التطبيق','ok')}
+ Store.save();rerender()};
+ACT['lk.edit']=function(el){TOOLS._lkEdit=el.getAttribute('data-id');rerender()};
+ACT['lk.cancel']=function(){TOOLS._lkEdit=null;rerender()};
+ACT['lk.del']=function(el){var id=el.getAttribute('data-id');
+ ST.links=ST.links.filter(function(l){return l.id!==id});
+ if(TOOLS._lkEdit===id)TOOLS._lkEdit=null;Store.save();rerender();toast('حُذف التطبيق')};
+
+/* ---- الملخصات الحية (Firebase REST) ---- */
+var LIVE_T=null;
+function jget(o,p){var ks=String(p).split('.'),i;for(i=0;i<ks.length;i++){if(o==null)return undefined;o=o[ks[i]]}return o}
+function liveURL(l){var base=(ST.liveBase||'').replace(/\/+$/,'');var p=((l.live&&l.live.path)||'').trim();
+ if(!p)return '';p=p.split('{today}').join(todayS());
+ var u=/^https?:\/\//.test(p)?p:(base?base+'/'+p.replace(/^\/+/,''):'');
+ if(!u)return '';
+ if(u.indexOf('.json')<0&&!/output=csv|format=csv|\.csv/.test(u)){var qi=u.indexOf('?');u=qi<0?u+'.json':u.slice(0,qi)+'.json'+u.slice(qi)}
+ return u}
+function autoSum(d){var out=[];
+ (function walk(o,pre,dep){if(out.length>=4||dep>3||o==null)return;
+  if(typeof o==='number'&&isFinite(o)){out.push({l:pre||'قيمة',v:o});return}
+  if(typeof o==='object'){var ks=Object.keys(o),i;for(i=0;i<ks.length&&out.length<4;i++)if(ks[i].charAt(0)!=='#')walk(o[ks[i]],ks[i],dep+1)}})(d,'',0);
+ return{vals:out,count:(d&&typeof d==='object')?Object.keys(d).length:0}}
+function parseCSV(t){var rows=[],row=[],cur='',q=false,i,ch;
+ for(i=0;i<t.length;i++){ch=t.charAt(i);
+  if(q){if(ch==='"'){if(t.charAt(i+1)==='"'){cur+='"';i++}else q=false}else cur+=ch}
+  else if(ch==='"')q=true;
+  else if(ch===','){row.push(cur);cur=''}
+  else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t.charAt(i+1)==='\n')i++;row.push(cur);rows.push(row);row=[];cur=''}
+  else cur+=ch}
+ if(cur!==''||row.length){row.push(cur);rows.push(row)}
+ return rows.filter(function(r){return r.join('').trim()!==''})}
+function csvToObj(t){var rows=parseCSV(t);if(rows.length<2)return{'#rows':0};
+ var head=rows[0].map(function(h){return String(h).trim()}),v=rows[1],d={'#rows':rows.length-1},i;
+ for(i=0;i<head.length;i++){var raw=String(v[i]==null?'':v[i]).trim();
+  var nv=parseFloat(raw.replace(/[\u060C,\s]/g,''));
+  d[head[i]]=(raw!==''&&isFinite(nv))?nv:raw}
+ return d}
+function fetchLive(l,cb){var u=liveURL(l);if(!u){cb({err:'حدد قاعدة Firebase والمسار أولًا'});return}
+ var isCsv=/output=csv|format=csv|\.csv/.test(u);
+ var ctl=(typeof AbortController!=='undefined')?new AbortController():null;
+ var to=setTimeout(function(){if(ctl)ctl.abort()},9000);var t0=Date.now();
+ fetch(u,ctl?{signal:ctl.signal}:{}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);
+   return isCsv?r.text().then(function(t){return csvToObj(t)}):r.json()})
+ .then(function(d){clearTimeout(to);var vals,count=0;
+   var topN=(d&&typeof d==='object')?((d['#rows']!==undefined)?d['#rows']:Object.keys(d).length):0;
+   if(l.live.fields&&l.live.fields.length){vals=l.live.fields.map(function(f){var v;
+     if(f.p==='#count')v=topN;else v=jget(d,f.p);
+     if(typeof v==='number'&&isFinite(v)){if(f.s)v=v*f.s}
+     else v=(v==null?null:String(v).slice(0,18));
+     return{l:f.l,v:v}});count=topN}
+   else{var a=autoSum(d);vals=a.vals;count=topN}
+   l.live.cache={t:Date.now(),ms:Date.now()-t0,vals:vals,count:count,err:''};
+   Store.save();cb(l.live.cache)})
+ .catch(function(e){clearTimeout(to);l.live=l.live||{};l.live.cache=l.live.cache||{};
+   l.live.cache.err=String((e&&e.message)||e);Store.save();cb({err:l.live.cache.err})})}
+function lvDot(c){if(!c||(!c.t&&!c.err))return '';
+ if(c.err&&!c.vals)return 'bad';var a=Date.now()-(c.t||0);
+ return a<6e5?'ok':(a<216e5?'warn':'bad')}
+function lvBody(l){var c=l.live&&l.live.cache;
+ if(!c||(!c.vals&&!c.err))return '<div style="font-size:10px;color:var(--mut2);padding:6px 0">اضغط ⟳ للمزامنة الأولى من التطبيق</div>';
+ if(c.err&&!c.vals)return '<div style="font-size:10px;color:var(--bad);padding:6px 0">تعذر الاتصال — '+esc(c.err)+'</div>';
+ var b=(c.vals||[]).map(function(r){return '<div class="lvrow"><span>'+esc(r.l)+'</span><b>'+
+  ((typeof r.v==='number')?fmt(r.v,(r.v%1===0)?0:(Math.abs(r.v)>=100?0:2)):(r.v==null?'—':esc(r.v)))+'</b></div>'}).join('');
+ b+='<div class="lvmeta"><span>'+(c.count?'العناصر: '+c.count+' · ':'')+'آخر مزامنة '+new Date(c.t).toLocaleTimeString('en-GB').slice(0,5)+' · '+c.ms+'ms</span>'+
+  (c.err?'<span style="color:var(--warn)">آخر محاولة فشلت — القيم مخزّنة</span>':'')+'</div>';
+ return b}
+function lvCard(l){var c=l.live&&l.live.cache;
+ return '<div class="lvcard" id="lv_'+l.id+'"><div class="lvh"><span class="ico">'+esc(l.ic||'⇱')+'</span><b>'+esc(l.nm)+'</b><span class="lvdot '+lvDot(c)+'"></span></div>'+
+ '<div>'+lvBody(l)+'</div><div class="lvft">'+
+ '<button class="btn g sm" data-act="live.one" data-id="'+l.id+'">⟳ مزامنة</button>'+
+ (l.url?'<a class="btn g sm" target="_blank" rel="noopener" href="'+esc(l.url)+'">فتح ↗</a>':'')+
+ '<button class="btn g sm" data-act="lk.golive" data-id="'+l.id+'" title="إعداد الملخص">⚙</button></div></div>'}
+ACT['live.one']=function(el){var id=el.getAttribute('data-id'),l=null,i;
+ for(i=0;i<ST.links.length;i++)if(ST.links[i].id===id)l=ST.links[i];
+ if(!l||!l.live)return;var card=$('lv_'+id);
+ if(card)card.querySelector('.lvdot').className='lvdot warn';
+ fetchLive(l,function(){var c2=$('lv_'+id);if(c2)c2.outerHTML=lvCard(l)})};
+ACT['live.all']=function(){ST.links.forEach(function(l){if(l.live&&l.live.path)ACT['live.one']({getAttribute:function(){return l.id}})})};
+ACT['live.auto']=function(el){ST.liveAuto=!!el.checked;Store.save();setupLiveTimer();
+ toast(ST.liveAuto?'تحديث تلقائي كل ٦٠ ثانية':'أُوقف التحديث التلقائي')};
+ACT['lk.golive']=function(el){TOOLS._lkEdit=el.getAttribute('data-id');
+ if(location.hash==='#/a/linkhub')route();else location.hash='#/a/linkhub'};
+ACT['lk.base']=function(){var b=VS('lk_base');
+ if(b&&!/^https?:\/\//.test(b)){toast('رابط القاعدة يجب أن يبدأ بـ https://','bad');return}
+ ST.liveBase=b;Store.save();toast('حُفظت قاعدة Firebase','ok')};
+ACT['lk.test']=function(){var tmp={nm:'اختبار',ic:'⚡',live:{path:VS('lv_path'),fields:parseFields(VS('lv_fields'))}};
+ var out=$('lk_test');out.innerHTML='<span style="color:var(--mut2);font-size:10px">جارٍ الاتصال…</span>';
+ fetchLive(tmp,function(c){out.innerHTML=c.err?verdict('bad','فشل: '+esc(c.err)):
+  verdict('ok','نجح الاتصال ('+tmp.live.cache.ms+'ms) — معاينة:')+lvBody(tmp)})};
+function parseFields(txt){var fl=[];String(txt||'').split('\n').forEach(function(ln){ln=ln.trim();if(!ln)return;
+ var pp=ln.split('|');if(pp.length<2)return;
+ var f={l:pp[0].trim(),p:pp[1].trim()};
+ if(pp.length>=3){var sc=parseFloat(pp[2]);if(isFinite(sc)&&sc>0)f.s=sc}
+ fl.push(f)});return fl}
+function setupLiveTimer(){if(LIVE_T){clearInterval(LIVE_T);LIVE_T=null}
+ var onHome=(CUR.h==='#/p/home'||CUR.h===''||CUR.h==='#');
+ if(ST&&ST.liveAuto&&onHome&&ST.links.some(function(l){return l.live&&l.live.path}))
+  LIVE_T=setInterval(function(){ACT['live.all']()},60000)}
+
+/* ---- التنبيهات وغرفة الأزمات ---- */
+function alerts(){var A=[],t=ST.twin;
+ t.nodes.forEach(function(n){
+  if(isFinite(n.mn)&&n.us<n.mn)A.push({sv:'bad',t:'منسوب منخفض — '+n.nm,d:'أمام '+fmt(n.us,2)+' م أقل من الحد الأدنى '+fmt(n.mn,2),h:'#/p/twin'});
+  if(isFinite(n.mx)&&n.us>n.mx)A.push({sv:'bad',t:'منسوب مرتفع — '+n.nm,d:'أمام '+fmt(n.us,2)+' م أعلى من الحد الأقصى '+fmt(n.mx,2),h:'#/p/twin'})});
+ var wy=waterYear(),plan=t.quota.total*wy.frac;
+ if(t.quota.used>plan*1.03)A.push({sv:'warn',t:'تجاوز منحنى استخدام الحصة',d:'المستخدم '+fmt(t.quota.used,1)+' مقابل مخطط '+fmt(plan,1)+' مليار م³',h:'#/p/twin'});
+ var cc=ST.canals.filter(function(c){return c.st==='حرجة'}).length;
+ if(cc)A.push({sv:'warn',t:cc+' ترعة بحالة حرجة',d:'مطلوب خطط معالجة عاجلة بالتنسيق مع الإدارات',h:'#/a/tired'});
+ var sc=ST.structures.filter(function(s){return s.st==='حرجة'}).length;
+ if(sc)A.push({sv:'bad',t:sc+' منشأ بحالة حرجة',d:'قيود تشغيل حتى استكمال المعالجة',h:'#/a/structures'});
+ var oc=ST.complaints.filter(function(c){return c.st!=='منتهية'}).length;
+ if(oc)A.push({sv:'warn',t:oc+' شكوى مفتوحة',d:'بانتظار الفحص أو الإنهاء',h:'#/a/complaints'});
+ var ov=ST.violations.filter(function(v){return v.st!=='أزيلت'}).length;
+ if(ov)A.push({sv:'warn',t:ov+' تعدٍّ قائم على المجرى',d:'متابعة إجراءات الإزالة',h:'#/a/violations'});
+ return A}
+TOOLS.crisis={render:function(){var A=alerts();
+ var bad=A.filter(function(a){return a.sv==='bad'}).length;
+ var list=A.length?A.map(function(a){return '<div class="alertrow '+a.sv+'"><span class="sv"></span><div style="flex:1"><b>'+esc(a.t)+'</b><small>'+esc(a.d)+'</small></div>'+
+  '<button class="btn g sm" data-act="go" data-h="'+a.h+'">فتح ←</button></div>'}).join(''):
+  '<div class="empty"><b>لا توجد تنبيهات نشطة</b>الموقف المائي مستقر وفق العتبات المعرّفة.</div>';
+ return appShell('crisis','<div class="kpis" style="grid-template-columns:repeat(3,1fr)">'+
+  '<div class="kpi"><span>تنبيهات حرجة</span><b style="color:var(--bad)">'+bad+'</b><small class="b">أولوية فورية</small></div>'+
+  '<div class="kpi"><span>تنبيهات متابعة</span><b style="color:var(--warn)">'+(A.length-bad)+'</b><small class="w">ضمن اليوم</small></div>'+
+  '<div class="kpi"><span>إجمالي</span><b>'+A.length+'</b><small>مُجمّعة من كل المنظومات</small></div></div>'+
+  '<div class="btnrow" style="margin:2px 0 14px"><button class="btn p" data-act="ui.rr">↻ إعادة التقييم</button>'+
+  '<button class="btn gold" data-act="doc.report">🖶 تقرير الموقف</button></div>'+list)}};
+ACT['ui.rr']=function(){rerender();toast('أُعيد تقييم التنبيهات','ok')};
+/* =====================================================================
+   التوأم الرقمي + الوثائق + الصفحات + الموجّه + لوحة الأوامر + الإقلاع
+   ===================================================================== */
+var MAIN=['had','aswan','esna','nagh','assiut','delta'];
+function nodeById(id){for(var i=0;i<ST.twin.nodes.length;i++)if(ST.twin.nodes[i].id===id)return ST.twin.nodes[i];return null}
+function nodeAlert(n){return (isFinite(n.mn)&&n.us<n.mn)||(isFinite(n.mx)&&n.us>n.mx)}
+function twinSVG(){var ys={had:64,aswan:142,esna:220,nagh:298,assiut:376,delta:466};
+ var s='<svg viewBox="0 0 340 742" style="width:100%;direction:ltr" xmlns="http://www.w3.org/2000/svg">';
+ s+='<path d="M170 64 L170 466" class="flow" stroke="var(--aqua)" stroke-width="3" fill="none" opacity="0.75"/>';
+ s+='<path d="M170 466 L238 556 L238 688" class="flow" stroke="var(--aqua)" stroke-width="2.4" fill="none" opacity="0.65"/>';
+ s+='<path d="M170 466 L102 576 L102 688" class="flow" stroke="var(--aqua)" stroke-width="2.4" fill="none" opacity="0.65"/>';
+ function node(n,cx,py){var al=nodeAlert(n),sel=TOOLS._tsel===n.id;
+  var st=al?'var(--bad)':(sel?'var(--gold)':'var(--line2)');
+  var g='<g data-act="twin.sel" data-id="'+n.id+'" style="cursor:pointer">';
+  g+='<rect x="'+(cx-58)+'" y="'+(py-9)+'" width="116" height="18" rx="4.5" fill="var(--panel3)" stroke="'+st+'" stroke-width="'+((al||sel)?2:1.4)+'"/>';
+  if(n.ty==='قناطر'){for(var j=0;j<3;j++)g+='<rect x="'+(cx-24+j*18)+'" y="'+(py-5.5)+'" width="9" height="11" rx="1.5" fill="var(--aqua)" opacity="0.6"/>'}
+  else if(n.ty==='سد')g+='<polygon points="'+(cx-9)+','+(py+7)+' '+(cx+9)+','+(py+7)+' '+cx+','+(py-6)+'" fill="var(--gold)" opacity="0.85"/>';
+  else g+='<rect x="'+(cx-14)+'" y="'+(py-5)+'" width="28" height="10" rx="2" fill="var(--gold)" opacity="0.55"/>';
+  g+='<text x="'+cx+'" y="'+(py-15)+'" font-size="9.5" fill="var(--tx)" text-anchor="middle" class="artx" font-weight="700">'+esc(n.nm)+'</text>';
+  g+='<text x="'+(cx+64)+'" y="'+(py-1)+'" font-size="9.5" fill="var(--aqua)">'+fmt(n.us,2)+'</text>';
+  if(n.ds!=null)g+='<text x="'+(cx+64)+'" y="'+(py+10)+'" font-size="8" fill="var(--mut2)">'+fmt(n.ds,2)+'</text>';
+  g+='<text x="'+(cx-64)+'" y="'+(py+1)+'" font-size="9.5" fill="var(--gold2)" text-anchor="end">'+fmt(n.q,0)+'</text>';
+  g+='<text x="'+(cx-64)+'" y="'+(py+11)+'" font-size="7" fill="var(--mut2)" text-anchor="end" class="artx">م³/ث</text>';
+  if(al)g+='<circle cx="'+(cx-58)+'" cy="'+(py-9)+'" r="4.5" fill="var(--bad)"><animate attributeName="opacity" values="1;0.25;1" dur="1.6s" repeatCount="indefinite"/></circle>';
+  return g+'</g>'}
+ MAIN.forEach(function(id){s+=node(nodeById(id),170,ys[id])});
+ s+=node(nodeById('zifta'),238,596);s+=node(nodeById('edfina'),102,616);
+ s+='<text x="238" y="705" font-size="8.5" fill="var(--mut)" text-anchor="middle" class="artx">فرع دمياط</text>';
+ s+='<text x="102" y="705" font-size="8.5" fill="var(--mut)" text-anchor="middle" class="artx">فرع رشيد</text>';
+ s+='<text x="170" y="731" font-size="11" fill="var(--aqua)" text-anchor="middle" class="artx" font-weight="900">≈ ≈  البحر المتوسط  ≈ ≈</text>';
+ return s+'</svg>'}
+function twinEditor(){var n=nodeById(TOOLS._tsel);if(!n)return '<div class="empty"><b>اختر منشأً من المخطط</b>اضغط أي عقدة لتعديل مناسيبها وتصرفها وحدود الإنذار.</div>';
+ return '<div style="font-weight:900;margin-bottom:9px;color:var(--gold2)">'+esc(n.nm)+' <span class="badge demo">كم '+n.km+'</span>'+(n.demo?' <span class="badge demo">قيمة استرشادية</span>':'')+'</div>'+
+  '<div class="frm">'+fld('tw_us','منسوب أمام',n.us,{u:'م'})+fld('tw_ds','منسوب خلف',n.ds==null?'':n.ds,{u:'م'})+
+  fld('tw_q','التصرف',n.q,{u:'م³/ث'})+fld('tw_mn','حد أدنى (إنذار)',n.mn,{u:'م'})+fld('tw_mx','حد أقصى (إنذار)',n.mx,{u:'م'})+'</div>'+
+  '<div class="btnrow"><button class="btn p" data-act="twin.save">حفظ القراءة ⇦</button></div>'}
+function twinQuota(){var q=ST.twin.quota,wy=waterYear(),plan=q.total*wy.frac;
+ var pu=Math.min(q.used/q.total*100,100),pp=Math.min(plan/q.total*100,100);
+ var over=q.used>plan*1.03;
+ return '<div style="font-size:10px;color:var(--mut)">السنة المائية '+wy.label+' — اليوم <b class="num">'+wy.days+'</b> من 365</div>'+
+  '<div class="frm" style="margin-top:8px;grid-template-columns:1fr 1fr auto">'+
+  fld('tw_used','المستخدم تراكميًا',q.used,{u:'مليار م³'})+
+  '<label><span>الحصة السنوية</span><input value="'+fmt(q.total,1)+'" disabled style="opacity:.65"></label>'+
+  '<div style="display:flex;align-items:end"><button class="btn g" data-act="twin.q">تحديث</button></div></div>'+
+  '<div style="margin-top:10px;font-size:9.5px;color:var(--mut)">المخطط حتى اليوم <b class="num" style="color:var(--gold2)">'+fmt(plan,1)+'</b> · المستخدم <b class="num" style="color:var(--aqua)">'+fmt(q.used,1)+'</b> مليار م³</div>'+
+  '<div class="progress" title="المخطط"><i style="width:'+pp.toFixed(1)+'%;background:var(--gold)"></i></div>'+
+  '<div class="progress" style="margin-top:5px" title="المستخدم"><i style="width:'+pu.toFixed(1)+'%"></i></div>'+
+  verdict(over?'warn':'ok',over?'الاستخدام يسبق المنحنى المخطط — يلزم إحكام التوزيع':'الاستخدام ضمن المنحنى المخطط للحصة')}
+function twinBalance(){var rows='',i;
+ for(i=0;i<MAIN.length-1;i++){var a=nodeById(MAIN[i]),b=nodeById(MAIN[i+1]);
+  var d=a.q-b.q,p=a.q>0?d/a.q*100:0;
+  rows+='<tr><td>'+esc(a.nm)+' ← '+esc(b.nm)+'</td><td class="n">'+fmt(a.q,0)+'</td><td class="n">'+fmt(b.q,0)+'</td>'+
+   '<td class="n" style="color:'+(d<0?'var(--bad)':'var(--gold2)')+'">'+fmt(d,0)+'</td><td class="n">'+fmt(p,1)+'%</td></tr>'}
+ var dl2=nodeById('delta'),z=nodeById('zifta'),e=nodeById('edfina');
+ var dd=dl2.q-(z.q+e.q);
+ rows+='<tr><td><b>الدلتا ← الفرعان + الرياحات</b></td><td class="n">'+fmt(dl2.q,0)+'</td><td class="n">'+fmt(z.q+e.q,0)+'</td>'+
+  '<td class="n" style="color:var(--gold2)">'+fmt(dd,0)+'</td><td class="n">'+fmt(dl2.q>0?dd/dl2.q*100:0,1)+'%</td></tr>';
+ return '<div class="tblwrap" style="max-height:none"><table class="dt"><thead><tr><th>الوصلة</th><th>وارد</th><th>منصرف</th><th>Δ مآخذ وفواقد</th><th>%</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+  '<p style="font-size:9px;color:var(--mut2);margin:8px 2px 0">Δ = مجموع مآخذ الترع والرياحات ومياه الشرب والفواقد على الوصلة — القيم السالبة تعني تعارض قراءات يستوجب المراجعة.</p>'}
+TOOLS.twin={render:function(){
+ return '<section class="sectorhero"><span class="eyebrow">مركز القيادة · نموذج حي موحّد</span>'+
+  '<h1><span style="color:var(--aqua)">⌇</span> التوأم الرقمي لنهر النيل</h1>'+
+  '<p>من خلف السد العالي حتى البحر المتوسط: مناسيب وتصرفات المحاور، موازنة الوصلات، وعدّاد الحصة السنوية. اضغط أي منشأ لتحديث قراءاته — كل القيم المبدئية استرشادية قابلة للتعديل.</p>'+lkRow('twin')+'</section>'+
+  '<div class="tgrid" style="margin-top:14px"><div class="panel"><h3>المخطط التآزري</h3><div id="tw_svg">'+twinSVG()+'</div>'+
+  '<div class="btnrow"><button class="btn g sm" data-act="twin.reset">↺ استرجاع القيم الاسترشادية</button></div></div>'+
+  '<div><div class="panel"><h3>تشغيل المنشأ المحدد</h3><div id="tw_ed">'+twinEditor()+'</div></div>'+
+  '<div class="panel" style="margin-top:12px"><h3>عدّاد الحصة السنوية</h3><div id="tw_qt">'+twinQuota()+'</div></div>'+
+  '<div class="panel" style="margin-top:12px"><h3>موازنة الوصلات</h3><div id="tw_bl">'+twinBalance()+'</div></div></div></div>'}};
+ACT['twin.sel']=function(el){TOOLS._tsel=el.getAttribute('data-id');
+ $('tw_svg').innerHTML=twinSVG();$('tw_ed').innerHTML=twinEditor()};
+ACT['twin.save']=function(){var n=nodeById(TOOLS._tsel);if(!n)return;
+ var us=V('tw_us'),ds=V('tw_ds'),q=V('tw_q'),mn=V('tw_mn'),mx=V('tw_mx');
+ if(!need(us+q))return;
+ n.us=us;n.ds=isFinite(ds)?ds:null;n.q=q;if(isFinite(mn))n.mn=mn;if(isFinite(mx))n.mx=mx;n.demo=false;
+ Store.save();$('tw_svg').innerHTML=twinSVG();$('tw_ed').innerHTML=twinEditor();$('tw_bl').innerHTML=twinBalance();
+ toast('حُفظت قراءة '+n.nm,'ok')};
+ACT['twin.q']=function(){var v=V('tw_used');if(!need(v))return;
+ ST.twin.quota.used=v;ST.twin.quota.demo=false;Store.save();$('tw_qt').innerHTML=twinQuota();toast('حُدّث عداد الحصة','ok')};
+ACT['twin.reset']=function(){if(!confirm('استرجاع كل قيم التوأم الاسترشادية؟'))return;
+ ST.twin.nodes=Store.defNodes();ST.twin.quota={total:55.5,used:51.9,demo:true};TOOLS._tsel=null;Store.save();rerender()};
+
+/* ---------- الوثائق والتقارير ---------- */
+TOOLS.docs={render:function(){
+ var about='المنصة v'+APPV+' · محرك ENG (١٣ وحدة حسابية موثّقة باختبارات) · ملف واحد يعمل دون اتصال · '+(LSW.ok?'الحفظ المحلي مفعّل':'الحفظ المحلي غير متاح في هذه البيئة — البيانات مؤقتة للجلسة');
+ return appShell('docs','<div class="scope">'+
+  '<div class="panel"><h3>تقرير الموقف اليومي</h3><p style="font-size:11px;color:var(--mut);line-height:2">يجمع تلقائيًا: مناسيب المحاور، عداد الحصة، التنبيهات النشطة، وآخر قراءات المحطات — بصيغة رسمية قابلة للطباعة والاعتماد.</p>'+
+  '<div class="btnrow"><button class="btn p" data-act="doc.report">🖶 توليد وطباعة التقرير</button></div></div>'+
+  '<div class="panel"><h3>النسخ الاحتياطي</h3><p style="font-size:11px;color:var(--mut);line-height:2">تصدير كامل بيانات المنصة ملف JSON واحد، أو استرجاع نسخة سابقة (يستبدل البيانات الحالية).</p>'+
+  '<div class="btnrow"><button class="btn gold" data-act="doc.exp">⇩ تصدير نسخة</button><button class="btn g" data-act="doc.imp">⇧ استيراد نسخة</button></div></div>'+
+  '<div class="panel"><h3>بيانات العرض الاسترشادية</h3><p style="font-size:11px;color:var(--mut);line-height:2">السجلات الموسومة «عرض» قيم افتراضية للتجربة فقط. امسحها عند بدء التشغيل الفعلي — تظل مدخلاتك أنت محفوظة.</p>'+
+  '<div class="btnrow"><button class="btn d" data-act="doc.clr">⌫ مسح بيانات العرض</button></div></div>'+
+  '<div class="panel"><h3>عن المنصة</h3><p style="font-size:11px;color:var(--mut);line-height:2">'+esc(about)+'</p>'+
+  '<div class="btnrow"><button class="btn g" data-act="doc.about">تفاصيل فنية</button></div></div></div>')}};
+function buildReport(){var wy=waterYear(),A=alerts(),t=ST.twin,b;
+ b='<div class="rhead"><div><h1>وزارة الموارد المائية والري — مصلحة الري</h1><div>تقرير الموقف المائي اليومي · المنصة الرقمية الموحدة v'+APPV+'</div></div>'+
+  '<div style="text-align:left"><div style="font-family:var(--mono)">'+todayS()+'</div><div>'+new Date().toLocaleDateString('ar-EG',{weekday:'long'})+'</div></div></div>';
+ b+='<p>السنة المائية <b>'+wy.label+'</b> — اليوم '+wy.days+' · الحصة المستخدمة <b>'+fmt(t.quota.used,1)+'</b> من '+fmt(t.quota.total,1)+' مليار م³ (المخطط حتى تاريخه '+fmt(t.quota.total*wy.frac,1)+' مليار م³).</p>';
+ b+='<h3>أولًا: مناسيب وتصرفات المحاور الرئيسية</h3><table><tr><th>المنشأ</th><th>أمام (م)</th><th>خلف (م)</th><th>التصرف (م³/ث)</th><th>الموقف</th></tr>';
+ t.nodes.forEach(function(n){b+='<tr><td>'+esc(n.nm)+'</td><td>'+fmt(n.us,2)+'</td><td>'+(n.ds==null?'—':fmt(n.ds,2))+'</td><td>'+fmt(n.q,0)+'</td><td>'+(nodeAlert(n)?'خارج النطاق':'ضمن النطاق')+'</td></tr>'});
+ b+='</table><h3>ثانيًا: التنبيهات النشطة ('+A.length+')</h3>';
+ b+=A.length?('<ul>'+A.map(function(a){return '<li>['+(a.sv==='bad'?'حرج':'متابعة')+'] '+esc(a.t)+' — '+esc(a.d)+'</li>'}).join('')+'</ul>'):'<p>لا توجد تنبيهات — الموقف مستقر وفق العتبات المعتمدة.</p>';
+ var last={};ST.readings.forEach(function(r){if(!last[r.st]||r.dt>=last[r.st].dt)last[r.st]=r});
+ var ks=Object.keys(last);
+ if(ks.length){b+='<h3>ثالثًا: آخر قراءات المحطات</h3><table><tr><th>المحطة</th><th>التاريخ</th><th>أمام</th><th>خلف</th><th>التصرف</th></tr>';
+  ks.forEach(function(k){var r=last[k];b+='<tr><td>'+esc(r.st)+'</td><td>'+esc(r.dt)+'</td><td>'+fmt(r.fr,2)+'</td><td>'+fmt(r.bk,2)+'</td><td>'+fmt(r.q,0)+'</td></tr>'});b+='</table>'}
+ b+='<div class="sig"><div>مهندس التشغيل</div><div>مدير عام المتابعة</div><div>يُعتمد،<br>رئيس مصلحة الري</div></div>';
+ $('rpt').innerHTML=b;document.body.classList.add('rp');
+ setTimeout(function(){window.print()},80);
+ window.onafterprint=function(){document.body.classList.remove('rp')};
+ setTimeout(function(){document.body.classList.remove('rp')},4000)}
+ACT['doc.report']=buildReport;
+ACT['doc.exp']=function(){dl('iwra_backup_'+todayS()+'.json',JSON.stringify(ST,null,1),'application/json');toast('صُدّرت النسخة الاحتياطية','ok')};
+ACT['doc.imp']=function(){$('impfile').click()};
+ACT['doc.clr']=function(){if(!confirm('مسح كل السجلات الموسومة «عرض»؟ (بياناتك المُدخلة تبقى)'))return;
+ Store.clearDemo();rerender();toast('مُسحت بيانات العرض','ok')};
+ACT['doc.about']=function(){showModal('<div class="ico" style="margin-bottom:10px">≈</div><h2>منصة مصلحة الري الرقمية v'+APPV+'</h2>'+
+ '<p>ملف HTML واحد · Vanilla JS بلا مكتبات ولا قوالب نصية · يعمل دون اتصال · الخطوط Cairo/JetBrains Mono.</p>'+
+ '<p><b>المحرك الهيدروليكي:</b> مانينج (أمامي/عكسي)، الأعماق الطبيعية والحرجة، فرود، GVF بتكامل RK4 مع تصنيف M/S، فتحات حرة/مغمورة وحل عكسي، هدارات مع تصحيح Villemonte، معايرة Q=C(G−G₀)ⁿ بالمربعات الصغرى مع مسح G₀، مناوبات، FAO-56، Cooper–Jacob، تصنيف ملوحة USDA، مؤشر حالة مرجّح، كفاية النهايات، تطهيرات.</p>'+
+ '<p><b>الجودة:</b> 25/25 اختبار وحدة على المحرك · حفظ محلي آمن مع بديل ذاكرة · تصدير/استيراد JSON و CSV.</p>'+
+ '<button class="btn p" data-act="ui.mclose" style="margin-top:6px">إغلاق</button>')};
+function showModal(h){$('mbody').innerHTML=h;$('modal').classList.add('show')}
+ACT['ui.mclose']=function(){$('modal').classList.remove('show')};
+
+/* ---------- الصفحات ---------- */
+function setCrumb(parts){var b='',i;for(i=0;i<parts.length;i++){if(i)b+='<span class="sep">/</span>';
+ b+=(i===parts.length-1?'<b>'+esc(parts[i])+'</b>':'<span>'+esc(parts[i])+'</span>')}
+ $('crumb').innerHTML=b}
+function cardsOf(list){return '<div class="cards">'+list.join('')+'</div>'}
+function appCard(k){var a=REG.apps[k];
+ return '<button class="card" data-act="go" data-h="#/a/'+k+'"><div style="display:flex;justify-content:space-between;align-items:start"><div class="ico">'+a.ic+'</div>'+
+ '<span class="badge '+(a.tool?'tool':'scope')+'">'+(a.tool?'تفاعلي ●':'نطاق')+'</span>'+(linksFor(k).length?'<span class="badge tool" style="margin-right:6px">↗</span>':'')+'</div>'+
+ '<h3>'+esc(a.nm)+'</h3><p>'+esc(a.ds)+'</p><em><span>فتح '+(a.tool?'التطبيق':'البطاقة')+' ←</span></em></button>'}
+function renderHome(){var t=ST.twin,had=nodeById('had'),A=alerts(),wy=waterYear();
+ var dq=ST.readings.filter(function(r){return r.st.indexOf('الدلتا')>=0&&isFinite(r.q)}).sort(function(a,b){return a.dt<b.dt?-1:1}).map(function(r){return r.q});
+ var tick=A.length?A.slice(0,4).map(function(a){return '<span>'+(a.sv==='bad'?'⛔':'⚠')+' '+esc(a.t)+'</span>'}).join(''):'<span>✓ لا توجد تنبيهات نشطة — الموقف مستقر</span>';
+ var adq=ST.kpiAdequacy;
+ var h='<section class="hero"><span class="eyebrow">● الموقف المائي اللحظي · السنة المائية '+wy.label+' · اليوم '+wy.days+'</span>'+
+  '<h1>مركز قيادة مصلحة الري</h1>'+
+  '<p>رؤية موحدة لإدارة وتوزيع المياه من خلف السد العالي حتى نهايات الترع — محرك هيدروليكي موثّق، سجلات تشغيلية، وإنذار مبكر يتغذى من كل المنظومات.</p>'+
+  '<div class="acts"><button class="hbtn" data-act="go" data-h="#/p/twin">فتح التوأم الرقمي ←</button>'+
+  '<button class="hbtn g" data-act="doc.report">🖶 تقرير الموقف اليومي</button></div>'+
+  '<div class="ticker">'+tick+'</div></section>';
+ h+='<div class="kpis">'+
+  '<div class="kpi"><span>إيراد خلف السد العالي</span><b>'+fmt(had.q,0)+'<u>م³/ث</u></b><small>≈ '+fmt(had.q*0.0864,1)+' مليون م³/يوم</small>'+spark(dq.slice(-14),86,26,'var(--aqua)')+'</div>'+
+  '<div class="kpi"><span>كفاية التوزيع</span><b>'+(adq?fmt(adq.v,1):'—')+'<u>%</u></b><small'+(adq&&adq.v<85?' class="w"':'')+'>'+(adq?(adq.demo?'قيمة استرشادية — حدّثها من نهايات الترع':'معتمدة من قياس نهايات الترع'):'لم تُعتمد بعد')+'</small></div>'+
+  '<div class="kpi"><span>سجلات المنشآت والآبار</span><b>'+(ST.structures.length+ST.wells.length)+'<u>سجل</u></b><small>'+ST.canals.length+' ترعة بسجل المتابعة</small></div>'+
+  '<div class="kpi'+(A.length?' alert':'')+'" data-act="go" data-h="#/a/crisis" style="cursor:pointer"><span>تنبيهات نشطة</span><b>'+A.length+'<u>تنبيه</u></b><small class="'+(A.length?'b':'')+'">'+(A.length?'افتح غرفة الأزمات ←':'لا شيء عاجل')+'</small></div></div>';
+ var LV=ST.links.filter(function(l){return l.live&&l.live.path});
+ if(LV.length)h+='<div class="head"><div><span>مزامنة مباشرة · Firebase REST</span><h2>ملخصات حية من التطبيقات</h2></div>'+
+  '<span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+  '<label style="font-size:9.5px;color:var(--mut);display:flex;gap:5px;align-items:center;cursor:pointer"><input type="checkbox" data-act="live.auto" '+(ST.liveAuto?'checked':'')+' style="width:auto"> تلقائي ٦٠ث</label>'+
+  '<button class="tbtn" data-act="live.all">⟳ تحديث الكل</button></span></div>'+
+  '<div class="livegrid">'+LV.map(lvCard).join('')+'</div>';
+ var LK=ST.links.filter(function(l){return l.url});
+ if(LK.length)h+='<div class="head"><div><span>البوابة الموحدة</span><h2>تطبيقات مصلحة الري</h2></div>'+
+  '<button class="tbtn" data-act="go" data-h="#/a/linkhub">إدارة الروابط ←</button></div>'+
+  '<div class="appgrid">'+LK.map(function(l){
+   return '<a class="apptile" target="_blank" rel="noopener" href="'+esc(l.url)+'" title="'+esc(l.nm)+'"><i>↗</i><span class="ico">'+esc(l.ic||'⇱')+'</span><b>'+esc(l.nm)+'</b></a>'}).join('')+'</div>';
+ h+='<div class="head"><div><span>القطاعات التشغيلية</span><h2>قطاعات مصلحة الري</h2></div><span style="font-size:9.5px;color:var(--mut)">'+Object.keys(REG.apps).length+' تطبيقًا · '+Object.keys(REG.apps).filter(function(k){return REG.apps[k].tool}).length+' تفاعليًا</span></div>';
+ h+=cardsOf(REG.sectors.map(function(s){var nT=s.apps.filter(function(k){return REG.apps[k].tool}).length;
+  return '<button class="card" data-act="go" data-h="#/s/'+s.id+'"><div class="ico">'+s.ic+'</div><h3>'+esc(s.nm)+'</h3><p>'+esc(s.ds)+'</p>'+
+  '<em><span>'+s.apps.length+' تطبيقات · '+nT+' تفاعلي</span><span>دخول ←</span></em></button>'}));
+ $('view').innerHTML=h;setCrumb(['مركز القيادة'])}
+function renderSector(id){var s=null,i;for(i=0;i<REG.sectors.length;i++)if(REG.sectors[i].id===id)s=REG.sectors[i];
+ if(!s){renderHome();return}
+ var h='<section class="sectorhero"><span class="eyebrow">قطاع تشغيلي</span><h1><span style="color:var(--aqua)">'+s.ic+'</span> '+esc(s.nm)+'</h1><p>'+esc(s.ds)+'</p></section>';
+ if(s.org)h+='<div class="org">'+s.org.map(function(o){return '<div>'+esc(o[0])+'<small>'+esc(o[1])+' سجل</small></div>'}).join('')+'</div>';
+ h+='<div class="head"><div><span>بوابات ونماذج</span><h2>تطبيقات '+esc(s.nm)+'</h2></div></div>'+cardsOf(s.apps.map(appCard));
+ $('view').innerHTML=h;setCrumb([s.nm])}
+function renderScope(k){var a=REG.apps[k],sc=a.scope,sec=REG.sectorOf(k);
+ var h=appShell(k,'<div class="scope">'+
+  '<div class="panel"><h3>نطاق المنظومة</h3><ul>'+sc.sc.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+
+  '<div class="panel"><h3>مؤشرات الأداء</h3><ul>'+sc.kp.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'+
+  '<p style="font-size:10.5px;color:var(--gold2);margin:12px 0 0;font-weight:700">'+esc(sc.integ)+'</p></div></div>'+
+  '<div class="panel" style="margin-top:12px"><h3>جاهزية التطوير</h3>'+
+  '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mut)"><span>نموذج التشغيل يُبنى على نواة المنصة الحالية (المحرك + السجلات + التقارير)</span><b class="num" style="color:var(--aqua)">'+sc.pr+'%</b></div>'+
+  '<div class="progress"><i style="width:'+sc.pr+'%"></i></div>'+
+  '<div class="btnrow"><button class="btn g sm" data-act="go" data-h="#/s/'+(sec?sec.id:'irrigation')+'">→ عودة للقطاع</button></div></div>');
+ $('view').innerHTML=h;setCrumb([sec?sec.nm:'',a.nm])}
+function restoreTab(k){var tb=TOOLS._tab&&TOOLS._tab[k];if(!tb)return;
+ var btn=document.querySelector('.tabs button[data-app="'+k+'"][data-tab="'+tb+'"]');
+ if(btn)ACT['ui.tab'](btn)}
+function renderApp(k){var a=REG.apps[k];
+ if(k==='twin'){$('view').innerHTML=TOOLS.twin.render();setCrumb(['مركز القيادة','التوأم الرقمي للنيل']);return}
+ if(!a){renderHome();return}
+ if(a.tool&&TOOLS[k]){$('view').innerHTML=TOOLS[k].render();if(TOOLS[k].wire)TOOLS[k].wire();restoreTab(k);
+  var sec=REG.sectorOf(k);setCrumb([sec?sec.nm:'',a.nm])}
+ else renderScope(k)}
+
+/* ---------- الموجّه والقائمة ---------- */
+function route(){var h=location.hash||'#/p/home';CUR.h=h;var m;
+ closePal();$('side').classList.remove('open');
+ if((m=h.match(/^#\/s\/(\w+)/)))renderSector(m[1]);
+ else if((m=h.match(/^#\/a\/(\w+)/)))renderApp(m[1]);
+ else if(h==='#/p/twin')renderApp('twin');
+ else renderHome();
+ markNav(h);setupLiveTimer();try{window.scrollTo(0,0)}catch(e){}}
+function rerender(){route()}
+ACT['go']=function(el){var h=el.getAttribute('data-h');
+ if(location.hash===h)route();else location.hash=h};
+function buildNav(){var b='<p class="navtitle">مركز القيادة</p>';
+ b+='<button data-act="go" data-h="#/p/home"><i>▦</i>نظرة عامة</button>';
+ b+='<button data-act="go" data-h="#/p/twin"><i>⌇</i>التوأم الرقمي للنيل</button>';
+ b+='<p class="navtitle">قطاعات المصلحة</p>';
+ REG.sectors.slice(0,5).forEach(function(s){b+='<button data-act="go" data-h="#/s/'+s.id+'"><i>'+s.ic+'</i>'+esc(s.nm)+'</button>'});
+ b+='<p class="navtitle">منظومات مشتركة</p>';
+ b+='<button data-act="go" data-h="#/s/shared"><i>⊞</i>التطبيقات المشتركة</button>';
+ $('nav').innerHTML=b}
+function markNav(h){var m=h.match(/^#\/a\/(\w+)/),sh=h;
+ if(m){var sec=REG.sectorOf(m[1]);sh=sec?'#/s/'+sec.id:h;if(m[1]==='twin')sh='#/p/twin'}
+ var bs=$('nav').querySelectorAll('button'),i;
+ for(i=0;i<bs.length;i++)bs[i].classList.toggle('on',bs[i].getAttribute('data-h')===sh||bs[i].getAttribute('data-h')===h)}
+
+/* ---------- لوحة الأوامر والبحث ---------- */
+var PAL={items:[],f:[],sel:0};
+function palIndex(){var it=[
+ {t:'نظرة عامة — مركز القيادة',s:'المؤشرات والقطاعات',ic:'▦',h:'#/p/home',tag:'صفحة'},
+ {t:'التوأم الرقمي للنيل',s:'المخطط التآزري والموازنة وعداد الحصة',ic:'⌇',h:'#/p/twin',tag:'صفحة'}];
+ REG.sectors.forEach(function(s){it.push({t:s.nm,s:s.ds,ic:s.ic,h:'#/s/'+s.id,tag:'قطاع'})});
+ REG.sectors.forEach(function(s){s.apps.forEach(function(k){var a=REG.apps[k];
+  it.push({t:a.nm,s:a.ds,ic:a.ic,h:'#/a/'+k,tag:a.tool?'تفاعلي':'نطاق'})})});
+ it.push({t:'تقرير الموقف اليومي',s:'توليد نسخة رسمية للطباعة',ic:'🖶',act:'doc.report',tag:'أمر'});
+ it.push({t:'تبديل النمط ليلي / نهاري',s:'',ic:'◐',act:'ui.theme',tag:'أمر'});
+ it.push({t:'نسخة احتياطية JSON',s:'تصدير كل البيانات',ic:'⇩',act:'doc.exp',tag:'أمر'});
+ it.push({t:'استيراد نسخة',s:'استرجاع من ملف',ic:'⇧',act:'doc.imp',tag:'أمر'});
+ it.push({t:'مسح بيانات العرض',s:'حذف السجلات الاسترشادية',ic:'⌫',act:'doc.clr',tag:'أمر'});
+ it.push({t:'تثبيت التطبيق على الجهاز',s:'إضافة للشاشة الرئيسية / سطح المكتب',ic:'📲',act:'ui.install',tag:'أمر'});
+ ST.links.forEach(function(l){if(l.url)it.push({t:l.nm,s:'تطبيق خارجي — '+hostOf(l.url),ic:l.ic||'⇱',url:l.url,tag:'خارجي ↗'})});
+ PAL.items=it}
+var PALAI=[['راجع|gvf','منحنى المياه الراجعة داخل «المعمل الهيدروليكي»'],['بواب|هدار|فتح','حسابات التشغيل في «تشغيل البوابات والهدارات»'],
+ ['مناوب|زمام|مقنن','حاسبة «المناوبات والتوزيع»'],['بئر|ابار|هبوط|جوفي','قاعدة الآبار — قياسات وهبوط التشغيل'],
+ ['معايره|منحنى القياس','تبويب معايرة Q–H في «المناسيب والتصرفات»'],['ملوحه|جوده|ec','تصنيف العينة في «نوعية المياه»'],
+ ['تعدي|ازاله','سجل «التعديات والإزالات»'],['شكو','منظومة الشكاوى — رقم مرجعي تلقائي'],
+ ['تطهير|اطماء','حاسبة «التطهيرات»'],['تقرير|طباعه','أمر «تقرير الموقف اليومي»'],['حصه|55','عدّاد الحصة داخل التوأم الرقمي']];
+function palOpen(){palIndex();$('pal').classList.add('show');var i=$('palin');i.value='';palFilter();setTimeout(function(){i.focus()},30)}
+function closePal(){var p=$('pal');if(p)p.classList.remove('show')}
+ACT['pal.open']=palOpen;
+function palFilter(){var q=nrm(VS('palin'));
+ PAL.f=PAL.items.filter(function(x){return !q||nrm(x.t+' '+x.s).indexOf(q)>=0}).slice(0,12);
+ PAL.sel=0;
+ $('pallist').innerHTML=PAL.f.length?PAL.f.map(function(x,i){
+  return '<div class="pitem'+(i===PAL.sel?' sel':'')+'" data-act="pal.go" data-i="'+i+'"><div class="ico">'+x.ic+'</div>'+
+  '<div style="flex:1"><div>'+esc(x.t)+'</div><small>'+esc(x.s)+'</small></div><span class="tag">'+esc(x.tag)+'</span></div>'}).join(''):
+  '<div class="empty" style="margin:8px"><b>لا نتائج</b>جرّب كلمة أقصر.</div>';
+ var hint='';for(var i=0;i<PALAI.length&&!hint;i++){var ks=PALAI[i][0].split('|');
+  for(var j=0;j<ks.length;j++)if(q&&q.indexOf(nrm(ks[j]))>=0){hint='اقتراح: '+PALAI[i][1];break}}
+ $('palai').textContent=hint}
+function palExec(i){var x=PAL.f[i];if(!x)return;closePal();
+ if(x.url){window.open(x.url,'_blank');return}
+ if(x.h){if(location.hash===x.h)route();else location.hash=x.h}
+ else if(x.act&&ACT[x.act])ACT[x.act]()}
+ACT['pal.go']=function(el){palExec(+el.getAttribute('data-i'))};
+
+/* ---------- النمط والساعة والمعالجات ---------- */
+function applyTheme(){document.documentElement.setAttribute('data-theme',ST.theme);
+ var b=$('thbtn');if(b)b.textContent=ST.theme==='dark'?'◐':'◑'}
+ACT['ui.theme']=function(){ST.theme=ST.theme==='dark'?'light':'dark';Store.save();applyTheme()};
+function tick(){var d=new Date();
+ $('clk').textContent=d.toLocaleTimeString('en-GB')+'  ·  '+todayS()}
+var CVF={q1:0.0864,a1:4200,c1:175,d1:1/86.4,e1:640};
+function onInput(e){var t=e.target;if(!t.id)return;
+ if(t.id==='palin'){palFilter();return}
+ var m=t.id.match(/^cv_(\w\d)_(a|b)$/);if(!m)return;
+ var f=CVF[m[1]],v=parseFloat(t.value),o=$('cv_'+m[1]+'_'+(m[2]==='a'?'b':'a'));
+ if(!o)return;o.value=isFinite(v)?String(parseFloat((m[2]==='a'?v*f:v/f).toFixed(5))):''}
+function onClick(e){var t=e.target.closest('[data-act]');if(!t)return;
+ var a=t.getAttribute('data-act');if(ACT[a]){e.preventDefault();ACT[a](t,e)}}
+function onKey(e){
+ if((e.ctrlKey||e.metaKey)&&(e.key==='k'||e.key==='K'||e.key==='ن')){e.preventDefault();
+  if($('pal').classList.contains('show'))closePal();else palOpen();return}
+ var open=$('pal').classList.contains('show');
+ if(e.key==='Escape'){closePal();$('modal').classList.remove('show');return}
+ if(!open)return;
+ if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();
+  PAL.sel=Math.max(0,Math.min(PAL.f.length-1,PAL.sel+(e.key==='ArrowDown'?1:-1)));
+  var its=$('pallist').querySelectorAll('.pitem'),i;
+  for(i=0;i<its.length;i++)its[i].classList.toggle('sel',i===PAL.sel)}
+ else if(e.key==='Enter'){e.preventDefault();palExec(PAL.sel)}}
+function onImport(e){var f=e.target.files[0];if(!f)return;
+ var rd=new FileReader();
+ rd.onload=function(){try{var o=JSON.parse(rd.result);
+   if(!o||o.ver!==2||!o.twin)throw 0;
+   Object.keys(ST).forEach(function(k){delete ST[k]});
+   for(var k in o)ST[k]=o[k];
+   if(!ST.links)ST.links=Store.defLinks();ST.links=ST.links.filter(function(l){return !(l.id==='lk_penta'&&!l.url)});Store.upgradeLinks(ST);
+   Store.save();applyTheme();route();toast('استُرجعت النسخة بنجاح','ok')}
+  catch(x){toast('ملف غير صالح — يجب أن يكون نسخة v2 من المنصة','bad')}};
+ rd.readAsText(f);e.target.value=''}
+
+/* ---------- الإقلاع ---------- */
+/* ---- التثبيت وعامل الخدمة (PWA) ---- */
+var PWAP=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();PWAP=e;
+ var b=$('instbtn');if(b)b.style.display='inline-flex'});
+window.addEventListener('appinstalled',function(){PWAP=null;
+ var b=$('instbtn');if(b)b.style.display='none';toast('ثُبّت التطبيق على الجهاز ✓','ok')});
+ACT['ui.install']=function(){
+ if(PWAP){PWAP.prompt();PWAP.userChoice.then(function(){PWAP=null;
+  var b=$('instbtn');if(b)b.style.display='none'});return}
+ var ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
+ showModal('<h2>📲 تثبيت التطبيق على الجهاز</h2><p style="font-size:11.5px;color:var(--mut);line-height:2.2">'+
+  (ios?'في سفارى: اضغط زر المشاركة ⬆︎ ثم اختر «إضافة إلى الشاشة الرئيسية».'
+      :'افتح المنصة من رابط GitHub Pages (https) ثم من قائمة المتصفح ⋮ اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».')+
+  '</p><button class="btn p" data-act="ui.mclose">تمام</button>')};
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+ try{navigator.serviceWorker.register('./sw.js').catch(function(){})}catch(e){}}
+
+window.addEventListener('DOMContentLoaded',function(){
+ ST=Store.load();Store.seed();applyTheme();buildNav();palIndex();
+ var ch=$('stchip');if(!LSW.ok){ch.className='chip off';$('sttx').textContent='جلسة مؤقتة — الحفظ الدائم غير متاح هنا'}
+ window.addEventListener('hashchange',route);route();
+ tick();setInterval(tick,1000);
+ document.addEventListener('click',onClick);
+ document.addEventListener('input',onInput);
+ document.addEventListener('keydown',onKey);
+ $('impfile').addEventListener('change',onImport);
+ $('men').addEventListener('click',function(){$('side').classList.toggle('open')});
+ $('pal').addEventListener('click',function(e){if(e.target===$('pal'))closePal()});
+ $('modal').addEventListener('click',function(e){if(e.target===$('modal'))$('modal').classList.remove('show')});
+});
+</script>
+</body>
+</html>

@@ -288,6 +288,19 @@ a.btn{text-decoration:none}
 .lvft{display:flex;gap:6px;margin-top:9px}
 .card em a,.card em button{font-style:normal}
 .lkhost{font-family:var(--mono);direction:ltr;text-align:right;font-size:9px;color:var(--mut2);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#xapp{position:fixed;inset:0;z-index:26;background:var(--bg);transform:translateX(-4%) ;opacity:0;pointer-events:none;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .26s;display:flex;flex-direction:column}
+#xapp.show{transform:none;opacity:1;pointer-events:auto}
+.xbar{height:54px;flex:none;display:flex;align-items:center;gap:10px;padding:0 12px;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.xbar .ico{width:32px;height:32px;font-size:15px;border-radius:9px}
+.xbar b{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#xhost{position:relative;flex:1;background:var(--bg)}
+.xframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .3s;display:none}
+.xframe.on{opacity:1}
+.xload{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:var(--bg)}
+.xspin{width:15px;height:15px;border:2px solid var(--line2);border-top-color:var(--aqua);border-radius:50%;display:none}
+.xspin.go{display:inline-block;animation:xsp .8s linear infinite}
+@keyframes xsp{to{transform:rotate(360deg)}}
+a.apptile,a.btn{cursor:pointer}
 </style>
 </head>
 <body>
@@ -323,6 +336,23 @@ a.btn{text-decoration:none}
  <div class="phint"><span>↵ فتح</span><span>↑↓ تنقّل</span><span>Esc إغلاق</span><span id="palai"></span></div>
 </div></div>
 
+<div id="xapp" aria-hidden="true">
+ <div class="xbar">
+  <button class="tbtn" data-act="x.back">⟶ رجوع</button>
+  <span class="ico" id="xico">⇱</span><b id="xnm"></b>
+  <div class="tsp"></div>
+  <span class="xspin" id="xspin"></span>
+  <button class="tbtn" data-act="x.reload" title="إعادة تحميل">⟳</button>
+  <a class="tbtn" id="xext" target="_blank" rel="noopener" href="#" title="فتح فى تبويب خارجى">↗</a>
+ </div>
+ <div id="xhost">
+  <div class="xload" id="xload"><div>
+   <div class="mark" style="width:66px;height:66px;font-size:36px;margin:0 auto">≈</div>
+   <div id="xloadtx" style="margin-top:14px;font-size:12px;color:var(--mut)">جارٍ الفتح…</div>
+   <button class="btn g sm" data-act="x.ext2" id="xslow" style="margin-top:14px;display:none">يتأخر؟ افتح فى تبويب خارجى ↗</button>
+  </div></div>
+ </div>
+</div>
 <div id="toasts" aria-live="polite"></div>
 <div id="rpt"></div>
 <input type="file" id="impfile" accept="application/json" style="display:none">
@@ -332,7 +362,7 @@ a.btn{text-decoration:none}
    منصة مصلحة الري الرقمية v2.0 — نواة النظام
    ملف واحد · Vanilla JS · بدون قوالب نصية (توافق Termux/Android)
    ===================================================================== */
-var APPV='2.5.1';
+var APPV='2.6.0';
 
 /* ---------- أدوات مساعدة ---------- */
 function $(id){return document.getElementById(id)}
@@ -1267,7 +1297,7 @@ function linksFor(k){var L=(ST&&ST.links)?ST.links:[],o=[],i;
 function hostOf(u){try{return new URL(u).host}catch(e){return String(u).replace(/^https?:\/\//,'').split('/')[0]}}
 function lkRow(k){var L=linksFor(k);if(!L.length)return '';
  return '<div class="btnrow" style="margin-top:13px">'+L.map(function(l){
-  return '<a class="btn gold sm" target="_blank" rel="noopener" href="'+esc(l.url)+'">↗ فتح '+esc(l.nm)+'</a>'}).join('')+'</div>'}
+  return '<a class="btn gold sm" href="#/x/'+l.id+'">⟵ فتح '+esc(l.nm)+'</a>'}).join('')+'</div>'}
 var LKCATS=[['توأم رقمي','توأم رقمي'],['منظومة ميدانية','منظومة ميدانية'],['حاسبات','حاسبات'],['إدارية','إدارية']];
 function lkAttachOpts(){var o=[['','— غير مرتبط ببطاقة —'],['twin','التوأم الرقمي للنيل']];
  REG.sectors.forEach(function(sc){sc.apps.forEach(function(k){o.push([k,REG.apps[k].nm])})});return o}
@@ -1293,7 +1323,7 @@ TOOLS.linkhub={render:function(){
    (l.url?pill('مرتبط','ok'):pill('بانتظار الرابط','warn'))+((l.live&&l.live.path)?' '+pill('حي ⚡','info'):'')+'</div>'+
    '<h3>'+esc(l.nm)+'</h3><p>'+esc(l.ds||'')+' · <b style="color:var(--gold2)">'+esc(l.cat)+'</b></p>'+
    '<div class="lkhost">'+(l.url?esc(hostOf(l.url)):'—')+'</div>'+
-   '<em>'+(l.url?'<a class="btn gold sm" target="_blank" rel="noopener" href="'+esc(l.url)+'">↗ فتح</a>':'<span style="font-size:9px;color:var(--mut2)">أضِف الرابط بالتعديل</span>')+
+   '<em>'+(l.url?'<a class="btn gold sm" href="#/x/'+l.id+'">⟵ فتح</a>':'<span style="font-size:9px;color:var(--mut2)">أضِف الرابط بالتعديل</span>')+
    '<span><button class="btn g sm" data-act="lk.edit" data-id="'+l.id+'">تعديل</button> <button class="xdel" data-act="lk.del" data-id="'+l.id+'" title="حذف">✕</button></span></em></div>'}).join('');
  return appShell('linkhub','<div class="kpis" style="grid-template-columns:repeat(3,1fr)">'+
   '<div class="kpi"><span>تطبيقات مسجلة</span><b>'+ST.links.length+'</b><small>من منظومتك القائمة</small></div>'+
@@ -1385,7 +1415,7 @@ function lvCard(l){var c=l.live&&l.live.cache;
  return '<div class="lvcard" id="lv_'+l.id+'"><div class="lvh"><span class="ico">'+esc(l.ic||'⇱')+'</span><b>'+esc(l.nm)+'</b><span class="lvdot '+lvDot(c)+'"></span></div>'+
  '<div>'+lvBody(l)+'</div><div class="lvft">'+
  '<button class="btn g sm" data-act="live.one" data-id="'+l.id+'">⟳ مزامنة</button>'+
- (l.url?'<a class="btn g sm" target="_blank" rel="noopener" href="'+esc(l.url)+'">فتح ↗</a>':'')+
+ (l.url?'<a class="btn g sm" href="#/x/'+l.id+'">فتح ⟵</a>':'')+
  '<button class="btn g sm" data-act="lk.golive" data-id="'+l.id+'" title="إعداد الملخص">⚙</button></div></div>'}
 ACT['live.one']=function(el){var id=el.getAttribute('data-id'),l=null,i;
  for(i=0;i<ST.links.length;i++)if(ST.links[i].id===id)l=ST.links[i];
@@ -1565,6 +1595,32 @@ ACT['doc.about']=function(){showModal('<div class="ico" style="margin-bottom:10p
 function showModal(h){$('mbody').innerHTML=h;$('modal').classList.add('show')}
 ACT['ui.mclose']=function(){$('modal').classList.remove('show')};
 
+/* ---------- العارض المدمج للتطبيقات (انتقال داخلى ناعم) ---------- */
+var XF={cur:null,frames:{},t:null};
+function xLink(id){for(var i=0;i<ST.links.length;i++)if(ST.links[i].id===id)return ST.links[i];return null}
+function xOpen(id){var l=xLink(id);
+ if(!l||!l.url){toast('لا يوجد رابط مسجّل لهذا التطبيق بعد','warn');location.hash='#/a/linkhub';return}
+ XF.cur=id;$('xnm').textContent=l.nm;$('xico').textContent=l.ic||'⇱';$('xext').href=l.url;
+ var host=$('xhost'),f=XF.frames[id],fresh=!f,k;
+ for(k in XF.frames)XF.frames[k].style.display=(k===id)?'block':'none';
+ if(fresh){f=document.createElement('iframe');f.className='xframe';f.setAttribute('allow','fullscreen; geolocation; camera');
+  f.src=l.url;XF.frames[id]=f;host.appendChild(f);f.style.display='block';
+  f.addEventListener('load',function(){f.classList.add('on');xLoaded()})}
+ $('xload').style.display=(fresh||!f.classList.contains('on'))?'grid':'none';
+ $('xloadtx').textContent='جارٍ فتح '+l.nm+'…';$('xslow').style.display='none';
+ if(fresh){$('xspin').classList.add('go');clearTimeout(XF.t);
+  XF.t=setTimeout(function(){if($('xload').style.display!=='none')$('xslow').style.display='inline-flex'},8000)}
+ var x=$('xapp');x.classList.add('show');x.setAttribute('aria-hidden','false');
+ document.body.style.overflow='hidden';document.title=l.nm+' — منصة مصلحة الري'}
+function xLoaded(){$('xload').style.display='none';$('xspin').classList.remove('go');clearTimeout(XF.t)}
+function xHide(){var x=$('xapp');if(!x||!x.classList.contains('show'))return;
+ x.classList.remove('show');x.setAttribute('aria-hidden','true');
+ document.body.style.overflow='';document.title='منصة مصلحة الري الرقمية — مركز القيادة v2.0'}
+ACT['x.back']=function(){if(history.length>1)history.back();else location.hash='#/p/home'};
+ACT['x.reload']=function(){var f=XF.frames[XF.cur];if(!f)return;
+ f.classList.remove('on');$('xload').style.display='grid';$('xspin').classList.add('go');f.src=f.src};
+ACT['x.ext2']=function(){var l=xLink(XF.cur);if(l&&l.url)window.open(l.url,'_blank')};
+
 /* ---------- الصفحات ---------- */
 function setCrumb(parts){var b='',i;for(i=0;i<parts.length;i++){if(i)b+='<span class="sep">/</span>';
  b+=(i===parts.length-1?'<b>'+esc(parts[i])+'</b>':'<span>'+esc(parts[i])+'</span>')}
@@ -1599,7 +1655,7 @@ function renderHome(){var t=ST.twin,had=nodeById('had'),A=alerts(),wy=waterYear(
  if(LK.length)h+='<div class="head"><div><span>البوابة الموحدة</span><h2>تطبيقات مصلحة الري</h2></div>'+
   '<button class="tbtn" data-act="go" data-h="#/a/linkhub">إدارة الروابط ←</button></div>'+
   '<div class="appgrid">'+LK.map(function(l){
-   return '<a class="apptile" target="_blank" rel="noopener" href="'+esc(l.url)+'" title="'+esc(l.nm)+'"><i>↗</i><span class="ico">'+esc(l.ic||'⇱')+'</span><b>'+esc(l.nm)+'</b></a>'}).join('')+'</div>';
+   return '<a class="apptile" href="#/x/'+l.id+'" title="'+esc(l.nm)+'"><i>⟵</i><span class="ico">'+esc(l.ic||'⇱')+'</span><b>'+esc(l.nm)+'</b></a>'}).join('')+'</div>';
  h+='<div class="head"><div><span>القطاعات التشغيلية</span><h2>قطاعات مصلحة الري</h2></div><span style="font-size:9.5px;color:var(--mut)">'+Object.keys(REG.apps).length+' تطبيقًا · '+Object.keys(REG.apps).filter(function(k){return REG.apps[k].tool}).length+' تفاعليًا</span></div>';
  h+=cardsOf(REG.sectors.map(function(s){var nT=s.apps.filter(function(k){return REG.apps[k].tool}).length;
   return '<button class="card" data-act="go" data-h="#/s/'+s.id+'"><div class="ico">'+s.ic+'</div><h3>'+esc(s.nm)+'</h3><p>'+esc(s.ds)+'</p>'+
@@ -1634,6 +1690,8 @@ function renderApp(k){var a=REG.apps[k];
 /* ---------- الموجّه والقائمة ---------- */
 function route(){var h=location.hash||'#/p/home';CUR.h=h;var m;
  closePal();$('side').classList.remove('open');
+ if((m=h.match(/^#\/x\/(\w+)/))){if(!$('view').innerHTML.trim())renderHome();xOpen(m[1]);setupLiveTimer();return}
+ xHide();
  if((m=h.match(/^#\/s\/(\w+)/)))renderSector(m[1]);
  else if((m=h.match(/^#\/a\/(\w+)/)))renderApp(m[1]);
  else if(h==='#/p/twin')renderApp('twin');
@@ -1669,7 +1727,7 @@ function palIndex(){var it=[
  it.push({t:'استيراد نسخة',s:'استرجاع من ملف',ic:'⇧',act:'doc.imp',tag:'أمر'});
  it.push({t:'مسح بيانات العرض',s:'حذف السجلات الاسترشادية',ic:'⌫',act:'doc.clr',tag:'أمر'});
  it.push({t:'تثبيت التطبيق على الجهاز',s:'إضافة للشاشة الرئيسية / سطح المكتب',ic:'📲',act:'ui.install',tag:'أمر'});
- ST.links.forEach(function(l){if(l.url)it.push({t:l.nm,s:'تطبيق خارجي — '+hostOf(l.url),ic:l.ic||'⇱',url:l.url,tag:'خارجي ↗'})});
+ ST.links.forEach(function(l){if(l.url)it.push({t:l.nm,s:'يفتح داخل المنصة — '+hostOf(l.url),ic:l.ic||'⇱',h:'#/x/'+l.id,tag:'تطبيق ⟵'})});
  PAL.items=it}
 var PALAI=[['راجع|gvf','منحنى المياه الراجعة داخل «المعمل الهيدروليكي»'],['بواب|هدار|فتح','حسابات التشغيل في «تشغيل البوابات والهدارات»'],
  ['مناوب|زمام|مقنن','حاسبة «المناوبات والتوزيع»'],['بئر|ابار|هبوط|جوفي','قاعدة الآبار — قياسات وهبوط التشغيل'],
@@ -1713,7 +1771,11 @@ function onKey(e){
  if((e.ctrlKey||e.metaKey)&&(e.key==='k'||e.key==='K'||e.key==='ن')){e.preventDefault();
   if($('pal').classList.contains('show'))closePal();else palOpen();return}
  var open=$('pal').classList.contains('show');
- if(e.key==='Escape'){closePal();$('modal').classList.remove('show');return}
+ if(e.key==='Escape'){
+  if($('pal').classList.contains('show')){closePal();return}
+  if($('modal').classList.contains('show')){$('modal').classList.remove('show');return}
+  if($('xapp').classList.contains('show')){ACT['x.back']();return}
+  return}
  if(!open)return;
  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();
   PAL.sel=Math.max(0,Math.min(PAL.f.length-1,PAL.sel+(e.key==='ArrowDown'?1:-1)));

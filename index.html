@@ -362,7 +362,7 @@ a.apptile,a.btn{cursor:pointer}
    منصة مصلحة الري الرقمية v2.0 — نواة النظام
    ملف واحد · Vanilla JS · بدون قوالب نصية (توافق Termux/Android)
    ===================================================================== */
-var APPV='2.6.0';
+var APPV='2.6.1';
 
 /* ---------- أدوات مساعدة ---------- */
 function $(id){return document.getElementById(id)}
@@ -402,6 +402,7 @@ var Store=(function(){
   {id:'lk_ism',nm:'توأم ترعة الإسماعيلية',ic:'≋',cat:'توأم رقمي',ds:'IsmCanal DT · V25 PRO — قراءات المحاور اليومية',url:G+'ismailia-dt/',attach:'twin',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'الفم — أمامي (م)',p:'fom_ism.front'},{l:'الفم — تصرف (م³/ث)',p:'fom_ism.flow'},{l:'حجز المنير — أمامي (م)',p:'hgz_mnr.front'},{l:'حجز الصالحية — أمامي (م)',p:'hgz_slh.front'}]}},
   {id:'lk_suez',nm:'توأم ترعة السويس',ic:'≈',cat:'توأم رقمي',ds:'v3.97 — قراءات الفم والكيلومترات عبر المحور',url:G+'suez-canal-dt/',attach:'twin',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'الفم — أمامي (م)',p:'suez.front'},{l:'كيلو ١٦ — أمامي (م)',p:'suez16.front'},{l:'كيلو ٤٩٫٥ — أمامي (م)',p:'suez50.front'}]}},
   {id:'lk_mans',nm:'توأم ترعة المنصورية',ic:'≋',cat:'توأم رقمي',ds:'Digital Twin v2 لشبكة المنصورية',url:G+'Mansoria/',attach:'twin'},
+  {id:'lk_dairout',nm:'التوأم الهيدروليكي — مجموعة ديروط',ic:'⋔',cat:'توأم رقمي',ds:'مجموعة قناطر ديروط الجديدة — الإبراهيمية وبحر يوسف · ٧ مآخذ · ٣٢ منشأ · ٧ محطات رفع (٣٠ طلمبة)',url:'https://hydraulic-equations-runner--mohseno2002.replit.app/',attach:'twin'},
   {id:'lk_ismnet',nm:'منصة شبكات الري',ic:'⌗',cat:'توأم رقمي',ds:'التوأم الرقمي لشبكات الري — الإسماعيلية',url:G+'ismailia-canal/',attach:'twin'},
   {id:'lk_wazir',nm:'وحدة قيادة وزير',ic:'⊞',cat:'إدارية',ds:'Hydro Command Center — نبض المحور المركزي',url:G+'wazir-console/',attach:'',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'عقد مبلّغة اليوم',p:'#count'}]}},
   {id:'lk_tirednat',nm:'سجل الترع المتعبة — الجمهورية',ic:'!',cat:'منظومة ميدانية',ds:'الحصر القومي للترع المتعبة',url:G+'tired-canals/',attach:'tired'},

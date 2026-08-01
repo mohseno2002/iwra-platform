@@ -362,7 +362,7 @@ a.apptile,a.btn{cursor:pointer}
    منصة مصلحة الري الرقمية v2.0 — نواة النظام
    ملف واحد · Vanilla JS · بدون قوالب نصية (توافق Termux/Android)
    ===================================================================== */
-var APPV='2.6.2';
+var APPV='2.6.3';
 
 /* ---------- أدوات مساعدة ---------- */
 function $(id){return document.getElementById(id)}
@@ -408,6 +408,7 @@ var Store=(function(){
   {id:'lk_wazir',nm:'وحدة قيادة وزير',ic:'⊞',cat:'إدارية',ds:'Hydro Command Center — نبض المحور المركزي',url:G+'wazir-console/',attach:'',live:{path:'irrigation-dt/branches/readings/{today}',fields:[{l:'عقد مبلّغة اليوم',p:'#count'}]}},
   {id:'lk_tirednat',nm:'سجل الترع المتعبة — الجمهورية',ic:'!',cat:'منظومة ميدانية',ds:'الحصر القومي للترع المتعبة',url:G+'tired-canals/',attach:'tired'},
   {id:'lk_giza',nm:'بوابة ري الجيزة',ic:'▦',cat:'إدارية',ds:'بيانات الحجوز اليومية من شيت المتابعة',url:G+'Giza-/',attach:'depts',live:{path:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQx4SgO2qck9gR6RX55GsO7ktMorG-sqnDOdnFAWO3iruSoOUHIqEEEzMoj_BFOu9oLjVjb4_7NNgjn/pub?output=csv',fields:[{l:'حجز العياط — أمامي (م)',p:'أمام حجز العياط',s:0.01},{l:'حجز العياط — خلفي (م)',p:'خلف حجز العياط',s:0.01},{l:'قراءات بالشيت',p:'#count'}]}},
+  {id:'lk_sectadm',nm:'إدارات قطاع الري — الأصول والمنشآت',ic:'▥',cat:'إدارية',ds:'٣٢ إدارة عامة · الهندسات والترع والكباري والمنشآت من السجل الفعلي',url:G+'irrigation-sector-admins/',attach:'depts'},
   {id:'lk_belagh',nm:'شكاوى ري الجيزة (بلاغك وصل)',ic:'☏',cat:'منظومة ميدانية',ds:'بلاغات المواطنين بأرقام مرجعية',url:G+'giza-irrigation/',attach:'complaints'},
   {id:'lk_shsz',nm:'شكاوى ترعة السويس',ic:'☏',cat:'منظومة ميدانية',ds:'شكاوى المواطنين على ترعة السويس',url:G+'shakawa-suez/',attach:'complaints',live:{path:'https://suez-canal-dt-default-rtdb.firebaseio.com/complaints',fields:[{l:'شكاوى مسجلة',p:'#count'}]}},
   {id:'lk_dar',nm:'استلامات دار الهندسة — حياة كريمة',ic:'▤',cat:'منظومة ميدانية',ds:'لوحة استلامات تبطين الترع',url:G+'haya-karema/',attach:'projects'},

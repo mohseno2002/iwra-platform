@@ -1,6 +1,6 @@
-/* منصة مصلحة الري — عامل الخدمة v2.6.5
+/* منصة مصلحة الري — عامل الخدمة v2.6.6
    تنصيب متسامح: أي ملف ناقص لا يُفشل التثبيت. بيانات Firebase/Sheets لا تُعترض. */
-var V='iwra-v2.6.5';
+var V='iwra-v2.6.6';
 var CORE=['./','./index.html','./manifest.webmanifest'];
 var EXTRA=['./icons/icon-192.png','./icons/icon-512.png','./icons/icon-180.png','./icons/icon-maskable-512.png'];
 self.addEventListener('install',function(e){

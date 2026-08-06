@@ -302,8 +302,75 @@ a.btn{text-decoration:none}
 @keyframes xsp{to{transform:rotate(360deg)}}
 a.apptile,a.btn{cursor:pointer}
 </style>
+<style id="mwriGateCss">
+#mwriGate{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;background:#eef2f7;font-family:Cairo,'Segoe UI',Tahoma,sans-serif;direction:rtl}
+html.mwri-open #mwriGate{display:none}
+html:not(.mwri-open),html:not(.mwri-open) body{overflow:hidden!important}
+#mwriGate .g-card{width:min(92vw,382px);background:#fff;border:1px solid #dbe3ec;border-radius:18px;padding:26px 22px;box-shadow:0 18px 50px rgba(20,40,70,.14);text-align:center}
+#mwriGate .g-badge{width:60px;height:60px;margin:0 auto 14px;border-radius:16px;background:#e8f2f8;color:#1c6b91;display:flex;align-items:center;justify-content:center;font-size:27px}
+#mwriGate h1{margin:0 0 6px;font-size:17px;font-weight:700;color:#1d2b36;line-height:1.6}
+#mwriGate .g-sub{margin:0 0 18px;font-size:11.5px;color:#6b7c8c;line-height:1.8}
+#mwriGate input{width:100%;box-sizing:border-box;padding:13px 14px;font-size:16px;font-family:inherit;text-align:center;border:1px solid #cfdae5;border-radius:12px;background:#f8fafc;color:#1d2b36;outline:none;letter-spacing:2px}
+#mwriGate input:focus{border-color:#2b8bb8;background:#fff}
+#mwriGate button{width:100%;margin-top:12px;padding:13px;font-size:15px;font-weight:700;font-family:inherit;color:#fff;background:#1c6b91;border:0;border-radius:12px;cursor:pointer}
+#mwriGate button:disabled{background:#9db4c4;cursor:not-allowed}
+#mwriGate .g-msg{margin-top:12px;font-size:12.5px;min-height:18px;color:#c0392b}
+#mwriGate .g-foot{margin-top:16px;font-size:10.5px;color:#93a3b3}
+</style>
+<script id="mwriGateBoot">
+(function(){var K="mwri_gate_iwra_v1";try{var raw=localStorage.getItem(K);if(raw){var o=JSON.parse(raw);if(o&&o.exp&&o.exp>Date.now()){document.documentElement.classList.add("mwri-open");}else{localStorage.removeItem(K);}}}catch(e){}})();
+</script>
 </head>
 <body>
+<div id="mwriGate" role="dialog" aria-modal="true">
+<div class="g-card">
+<div class="g-badge">&#128274;</div>
+<h1>&#1605;&#1606;&#1589;&#1577; &#1605;&#1589;&#1604;&#1581;&#1577; &#1575;&#1604;&#1585;&#1609; &#1575;&#1604;&#1585;&#1602;&#1605;&#1610;&#1577;</h1>
+<p class="g-sub">&#1575;&#1604;&#1573;&#1583;&#1575;&#1585;&#1577; &#1575;&#1604;&#1605;&#1585;&#1603;&#1586;&#1610;&#1577; &#1604;&#1604;&#1605;&#1608;&#1575;&#1585;&#1583; &#1575;&#1604;&#1605;&#1575;&#1574;&#1610;&#1577; &#1608;&#1575;&#1604;&#1585;&#1609;<br>&#1605;&#1581;&#1575;&#1601;&#1592;&#1578;&#1609; &#1575;&#1604;&#1602;&#1575;&#1607;&#1585;&#1577; &#1608;&#1575;&#1604;&#1580;&#1610;&#1586;&#1577;</p>
+<input id="mwriGatePw" type="password" autocomplete="current-password" placeholder="&#1603;&#1604;&#1605;&#1577; &#1575;&#1604;&#1605;&#1585;&#1608;&#1585;">
+<button id="mwriGateBtn" type="button">&#1583;&#1582;&#1608;&#1604;</button>
+<div class="g-msg" id="mwriGateMsg"></div>
+<div class="g-foot">&#1583;&#1582;&#1608;&#1604; &#1605;&#1589;&#1585;&#1617;&#1581; &#1576;&#1607; &#1601;&#1602;&#1591;</div>
+</div>
+</div>
+<script id="mwriGateLogic">
+(function(){
+var K="mwri_gate_iwra_v1",L=K+"_lk",N=K+"_n",SALT="f2e6244c685e8b31f26fb779db73a477",HASH="deda68614acfde816bed49d3e5d6bae5d4772a954a8b5494344de037e3344c2b",ITER=200000,HOURS=12,MAXTRY=5;
+var inp=document.getElementById("mwriGatePw"),btn=document.getElementById("mwriGateBtn"),msg=document.getElementById("mwriGateMsg");
+if(!inp||!btn||!msg)return;
+function hex(buf){var a=new Uint8Array(buf),s="",i;for(i=0;i<a.length;i++){s+=("0"+a[i].toString(16)).slice(-2);}return s;}
+function saltBytes(){var a=new Uint8Array(SALT.length/2),i;for(i=0;i<a.length;i++){a[i]=parseInt(SALT.substr(i*2,2),16);}return a;}
+function lockLeft(){try{var t=parseInt(localStorage.getItem(L)||"0",10);return t>Date.now()?Math.ceil((t-Date.now())/1000):0;}catch(e){return 0;}}
+function bump(){try{var v=parseInt(localStorage.getItem(N)||"0",10)+1;localStorage.setItem(N,String(v));return v;}catch(e){return 1;}}
+function clr(){try{localStorage.removeItem(N);localStorage.removeItem(L);}catch(e){}}
+function say(t,c){msg.textContent=t;msg.style.color=c||"#c0392b";}
+function unlock(){try{localStorage.setItem(K,JSON.stringify({exp:Date.now()+HOURS*3600000}));}catch(e){}clr();document.documentElement.classList.add("mwri-open");try{window.dispatchEvent(new Event("resize"));}catch(e){}}
+function check(){
+var left=lockLeft();
+if(left>0){say("\u0645\u062d\u0627\u0648\u0644\u0627\u062a \u0643\u062b\u064a\u0631\u0629 \u2014 \u0627\u0646\u062a\u0638\u0631 "+left+" \u062b\u0627\u0646\u064a\u0629");return;}
+var pw=inp.value||"";
+if(!pw){say("\u0627\u0643\u062a\u0628 \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631");return;}
+if(!(window.crypto&&window.crypto.subtle)){say("\u0627\u0644\u0645\u062a\u0635\u0641\u062d \u0644\u0627 \u064a\u062f\u0639\u0645 \u0627\u0644\u062a\u062d\u0642\u0642 \u0627\u0644\u0622\u0645\u0646 \u2014 \u0627\u0641\u062a\u062d \u0627\u0644\u0631\u0627\u0628\u0637 \u0628\u0640 https");return;}
+btn.disabled=true;say("\u062c\u0627\u0631\u064d \u0627\u0644\u062a\u062d\u0642\u0642\u2026","#6b7c8c");
+var enc=new TextEncoder();
+window.crypto.subtle.importKey("raw",enc.encode(pw),{name:"PBKDF2"},false,["deriveBits"])
+.then(function(k){return window.crypto.subtle.deriveBits({name:"PBKDF2",salt:saltBytes(),iterations:ITER,hash:"SHA-256"},k,256);})
+.then(function(b){
+btn.disabled=false;
+if(hex(b)===HASH){say("\u062a\u0645 \u0627\u0644\u062f\u062e\u0648\u0644","#2e7d5b");unlock();return;}
+inp.value="";
+var n=bump();
+if(n>=MAXTRY){try{localStorage.setItem(L,String(Date.now()+60000));localStorage.removeItem(N);}catch(e){}say("\u0645\u062d\u0627\u0648\u0644\u0627\u062a \u0643\u062b\u064a\u0631\u0629 \u2014 \u0627\u0646\u062a\u0638\u0631 60 \u062b\u0627\u0646\u064a\u0629");}
+else{say("\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629 ("+n+"/"+MAXTRY+")");}
+})
+.catch(function(e){btn.disabled=false;say("\u062a\u0639\u0630\u0651\u0631 \u0627\u0644\u062a\u062d\u0642\u0642: "+(e&&e.message?e.message:e));});
+}
+btn.addEventListener("click",check);
+inp.addEventListener("keydown",function(e){if(e.key==="Enter"||e.keyCode===13)check();});
+setTimeout(function(){try{if(!document.documentElement.classList.contains("mwri-open"))inp.focus();}catch(e){}},350);
+})();
+</script>
+
 <div class="shell">
 <aside class="side" id="side">
  <div class="logo"><div class="mark">≈</div><div><b>مصلحة الري</b><small>المنصة الرقمية الموحدة · v2.0</small></div></div>
@@ -362,7 +429,7 @@ a.apptile,a.btn{cursor:pointer}
    منصة مصلحة الري الرقمية v2.0 — نواة النظام
    ملف واحد · Vanilla JS · بدون قوالب نصية (توافق Termux/Android)
    ===================================================================== */
-var APPV='2.6.8';
+var APPV='2.6.9';
 
 /* ---------- أدوات مساعدة ---------- */
 function $(id){return document.getElementById(id)}
@@ -1839,7 +1906,7 @@ function pwaDiag(){var R=[];
     R.push([!!(g&&g.active),'عامل الخدمة نشط (لو ✗: حدّث الصفحة مرة)']);
     draw()}).catch(function(){R.push([false,'تعذر فحص عامل الخدمة']);draw()})})}
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
- try{navigator.serviceWorker.register('./sw.js?v=2.6.8').catch(function(){})}catch(e){}}
+ try{navigator.serviceWorker.register('./sw.js?v=2.6.9').catch(function(){})}catch(e){}}
 
 window.addEventListener('DOMContentLoaded',function(){
  ST=Store.load();Store.seed();applyTheme();buildNav();palIndex();
